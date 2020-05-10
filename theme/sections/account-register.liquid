@@ -1,0 +1,149 @@
+{% assign settings = section.settings %}
+{% assign heading = settings.heading %}
+{% assign subheading = settings.subheading %}
+{% assign label_firstname_text = settings.label_firstname_text %}
+{% assign label_lastname_text = settings.label_lastname_text %}
+{% assign label_email_text = settings.label_email_text %}
+{% assign label_password_text = settings.label_password_text %}
+{% assign submit_button_text = settings.submit_button_text %}
+
+{% capture terms_link %}
+  <a class="link" href="{{ settings.privacy_link_url }}" target="_blank">{{ settings.privacy_link_text }}</a>
+{% endcapture %}
+
+{% capture privacy_link %}
+  <a class="link" href="{{ settings.terms_link_url }}" target="_blank">{{ settings.terms_link_text }}</a>
+{% endcapture %}
+
+{% assign terms = settings.terms_conditions_text | replace: '{TERMS_LINK}', terms_link | replace: '{PRIVACY_LINK}', privacy_link %}
+
+<section class="register section">
+  <header class="account_header section-header">
+    <h1 class="account_heading">{{ heading }}</h1>
+    <p class="account_subheading">{{ subheading }}</p>
+  </header>
+
+  <div class="container">
+
+    {% form 'create_customer', id: 'RegisterForm', novalidate: 'novalidate' %}
+
+      <div class="formGroup">
+        <label class="label" for="customer[first_name]">{{ label_firstname_text }}</label>
+        <input id="first_name" class="input" name="customer[first_name]" type="text" value="" placeholder="" required>
+      </div>
+
+      <div class="formGroup">
+        <label class="label" for="customer[last_name]">{{ label_lastname_text }}</label>
+        <input id="last_name" class="input" name="customer[last_name]" type="text" value="" placeholder="" required>
+      </div>
+
+      <div class="formGroup">
+        <label class="label" for="customer[email]">{{ label_email_text }}</label>
+        <input id="register-email" class="input" name="customer[email]" type="email" value="" placeholder="" required>
+      </div>
+
+      <div class="formGroup">
+        <label class="label" for="customer[password]">{{ label_password_text }}</label>
+        <input id="reigster-password" class="input" name="customer[password]" type="password" value="" placeholder="" required>
+      </div>
+
+      <button class="button button-block" type="submit">{{ submit_button_text }}</button>
+
+      <p class="terms_text">{{ terms }}</p>
+
+    {% endform %}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Create Account",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Header text"
+      },
+      {
+        "type": "textarea",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Create an account"
+      },
+      {
+        "type": "textarea",
+        "id": "subheading",
+        "label": "Subheading"
+      },
+      {
+        "type": "header",
+        "content": "Form"
+      },
+      {
+        "type": "text",
+        "id": "label_firstname_text",
+        "label": "Label",
+        "default": "First name"
+      },
+      {
+        "type": "text",
+        "id": "label_lastname_text",
+        "label": "Label",
+        "default": "Last name"
+      },
+      {
+        "type": "text",
+        "id": "label_email_text",
+        "label": "Label",
+        "default": "E-mail"
+      },
+      {
+        "type": "text",
+        "id": "label_password_text",
+        "label": "Label",
+        "default": "Password"
+      },
+      {
+        "type": "text",
+        "id": "submit_button_text",
+        "label": "Submit button",
+        "default": "Create account"
+      },
+      {
+        "type": "header",
+        "content": "Regulation text"
+      },
+      {
+        "id": "terms_conditions_text",
+        "type": "textarea",
+        "label": "Terms text",
+        "default": "By creating an account, you agree to our {TERMS_LINK} and {PRIVACY_LINK}"
+      },
+      {
+        "id": "privacy_link_text",
+        "type": "text",
+        "label": "Privacy policy link text",
+        "default": "Privacy Policy",
+        "info": "Example: \"Privacy Policy\""
+      },
+      {
+        "id": "privacy_link_url",
+        "type": "url",
+        "label": "Privacy Policy URL",
+        "info": "Example: \"/pages/privacy-policy\""
+      },
+      {
+        "id": "terms_link_text",
+        "type": "text",
+        "label": "Terms and conditions link text",
+        "default": "Terms of use",
+        "info": "Example: \"Terms Of Use\""
+      },
+      {
+        "id": "terms_link_url",
+        "type": "url",
+        "label": "Terms and conditions URL",
+        "info": "Example: \"/pages/terms-conditions\""
+      }
+    ]
+  }
+{% endschema %}

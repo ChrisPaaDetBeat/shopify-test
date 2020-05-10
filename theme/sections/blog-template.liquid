@@ -1,0 +1,134 @@
+{% assign section_settings = section.settings %}
+{% assign articles = blog.articles %}
+{% assign blog_heading = page_title %}
+{% assign blog_subheading = section_settings.subheading %}
+{% assign blog_tags = blog.all_tags | sort: 'title' %}
+{% assign blog_tags_size = blog.all_tags | size %}
+{% assign blog_articles_size = blog.articles | size %}
+{% assign blog_url = blog.url %}
+{% assign show_tags = section_settings.show_tags %}
+{% assign tag_all_text = section_settings.tag_all_text %}
+{% assign text_no_posts_found = section_settings.text_no_posts_found %}
+{% assign pagination_limit = section_settings.pagination_limit %}
+
+<section class="blog section">
+
+  {% comment %} Header {% endcomment %}
+  <header class="section_header">
+    <h1 class="text-centered">{{ blog_heading }}</h1>
+    <h2 class="blog_subheading">{{ blog_subheading }}</h2>
+  </header>
+
+  {% comment %} Filter by tags {% endcomment %}
+  {% if show_tags and blog_tags_size > 0 %}
+  <div class="blogFilter container">
+    <ul class="blogFilter_tags list-unstyled">
+      <li class="blogFilter_tag"> <a href="{{ blog_url }}">{{ tag_all_text }}</a></li>
+      {% for tag in blog_tags %}
+        <li class="blogFilter_tag{% if current_tags contains tag %} blogFilter_tag-active{% endif %}">{{ tag | link_to_tag: tag }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% comment %} Articles {% endcomment %}
+  <div class="blog_posts container">
+    {% if blog_articles_size > 0 %}
+      {% paginate blog.articles limit: pagination_limit %}
+        {% for article in articles %}
+          {% assign article_title = article.title | truncatewords: 15 %}
+          {% assign article_url = article.url %}
+          {% assign article_image = article.image %}
+          {% assign article_author = article.author %}
+          {% assign article_excerpt = article.excerpt | truncatewords: 20 %}
+          {% assign article_created_at = article.created_at | date: "%b %d, %Y" %}
+          {% assign article_tags = article.tags %}
+
+          {% comment %} Article {% endcomment %}
+          {% comment %} {% include 'article-card', article: article, text_colour: text_colour %} {% endcomment %}
+          <article class="blogPost">
+            <a class="blogPost_link" href="{{ article_url }}">
+              <div class="blogPost_imageContainer">
+                {% comment %} Article image {% endcomment %}
+                {% include 'responsive-image', image: article_image %}
+
+                {% comment %} Article tags {% endcomment %}
+                <div class="blogPost_tags">
+                  {%- for tag in article_tags -%}
+                    <div class="blogPost_tag">{{ tag }}</div>
+                  {%- endfor -%}
+                </div>
+              </div>
+            </a>
+            <div class="blogPost_details">
+              <a class="blogPost_link" href="{{ article_url }}">
+                <div class="blogPost_title">{{ article_title }}</div>
+                {% comment %} <p class="blogPost_text">{{ article_excerpt }}</p> {% endcomment %}
+                <div class="blogPost_date">{{ article_created_at }}</div>
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+
+        {% comment %} Pagination {% endcomment %}
+        {% include 'pagination' %}
+
+      {% endpaginate %}
+    {% else %}
+      {{ text_no_posts_found }}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Blog",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "range",
+        "id": "pagination_limit",
+        "min": 12,
+        "max": 50,
+        "step": 1,
+        "label": "Number of posts per page",
+        "default": 16
+      },
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "textarea",
+        "id": "subheading",
+        "label": "Subheading"
+      },
+      {
+        "type": "header",
+        "content": "Tags"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_tags",
+        "label": "Show tags",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "tag_all_text",
+        "label": "Text for All tag",
+        "default": "All",
+        "info": "Tag to show all blog posts"
+      },
+      {
+        "type": "textarea",
+        "id": "text_no_posts_found",
+        "label": "No posts founds",
+        "default": "No posts yet"
+      }
+    ]
+  }
+{% endschema %}

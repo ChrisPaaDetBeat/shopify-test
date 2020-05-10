@@ -1,0 +1,133 @@
+{% assign settings = section.settings %}
+{% assign title = settings.newsletter_title %}
+{% assign subtitle = settings.newsletter_subtitle %}
+{% assign subscribe = settings.newsletter_subscribe %}
+{% assign success_text = settings.newsletter_success_text %}
+{% assign placeholder_text = settings.newsletter_placeholder %}
+{% assign email_validation_error_text = settings.newsletter_error_email_validation %}
+{% assign error_text = settings.newsletter_error_text %}
+{% assign terms_conditions = settings.newsletter_terms_conditions %}
+{% assign privacy_link_text = settings.newsletter_privacy_link_text %}
+{% assign privacy_link_url = settings.newsletter_privacy_link_url %}
+
+<section class="newsletter section">
+  <div class="newsletter_container container">
+
+    {% form 'customer', id: 'newsletter-form', class: 'newsletter_form', novalidate: 'novalidate' %}
+
+      {% comment %} 
+          A captcha is served by Shopify whenever more than 1 Customer Account creation attempt every 24 hours is made from the same IP.  
+      {% endcomment %}
+
+      <h2 class="newsletter_title">{{ title }}</h2>
+      <div class="newsletter_subtitle">{{ subtitle }}</div>
+
+      {% assign form_errors = form.errors %}
+      {% assign form_success = form.posted_successfully? %}
+
+      {% comment %} Form Response {% endcomment %}
+      <div class="newsletter_response">
+        {% if form_success %} {{ success_text }} {% endif %}
+        {% if form_errors %} {{ error_text }} {% endif %}
+      </div>
+
+      {% comment %} Form {% endcomment %}
+      <input type="hidden" id="contact_tags" name="contact[tags]" value="prospect,newsletter" />
+      <input type="email" id="newsletter-email" placeholder="{{ placeholder_text }}" value="" class="input newsletter_email" name="contact[email]" required/>
+
+      {% comment %} <div class="newsletter_options">
+        <div class="newsletter_option">
+          <label for="contact[Men or Women]">Men</label>
+          <input id="gender-men" class="newsletter_radio" name="contact[Men or Women]" type="radio" value="Men">
+        </div>
+        <div class="newsletter_option">
+          <label for="contact[Men or Women]">Women</label>
+          <input id="gender-women" class="newsletter_radio" name="contact[Men or Women]" type="radio" value="Women" checked="">
+        </div>
+      </div> {% endcomment %}
+
+      <div class="newsletter_consent">
+          <input id="newsletter-checkbox" class="newsletter_checkbox" name="contact[accepts_marketing]" type="checkbox" required>
+          <p>{{ terms_conditions }} <a class="link link-active" href="{{ privacy_link_url }}" target="_blank">{{ privacy_link_text }}</a></p>
+      </div>
+
+      <input id="newsletter-submit" class="button newsletter_submit" type="submit" value="{{ subscribe }}" disabled>
+    {% endform %}
+
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Newsletter Sign-up",
+    "settings": [
+      {
+        "id": "newsletter_title",
+        "type": "textarea",
+        "label": "Title"
+      },
+      {
+        "type": "textarea",
+        "id": "newsletter_subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "id": "newsletter_placeholder",
+        "type": "text",
+        "label": "Placeholder text",
+        "default": "E-mail address"
+      },
+      {
+        "id": "newsletter_subscribe",
+        "type": "text",
+        "label": "CTA button text",
+        "default": "Subscribe"
+      },
+      {
+        "id": "newsletter_success_text",
+        "type": "textarea",
+        "label": "Success message",
+        "default": "Thanks for subscribing!",
+        "info": "Example: \"Thanks for subscribing!\""
+      },
+      {
+        "id": "newsletter_error_text",
+        "type": "textarea",
+        "label": "Error message",
+        "info": "Example: \"Something went wrong. Please try again\""
+      },
+      {
+        "id": "newsletter_error_email_validation",
+        "type": "textarea",
+        "label": "Error e-mail validation",
+        "info": "Example: \"Enter a valid email address.\""
+      },
+      {
+        "id": "newsletter_terms_conditions",
+        "type": "textarea",
+        "label": "Terms and conditions text",
+        "default": "<span>Subscribe me to Vanilla's newsletter</span>I confirm that I am 16 years or older and I consent to Vanilla processing my personal data in accordance with their "
+      },
+      {
+        "id": "newsletter_privacy_link_text",
+        "type": "text",
+        "label": "Privacy policy link text",
+        "default": "privacy policy",
+        "info": "Example: \"Read privacy policy\""
+      },
+      {
+        "id": "newsletter_privacy_link_url",
+        "type": "url",
+        "label": "Privacy policy URL",
+        "info": "Example: \"/pages/privacy-policy\""
+      }
+    ],
+    "presets": [
+      {
+        "name": "Newsletter Sign-up",
+        "category": "Promotional",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

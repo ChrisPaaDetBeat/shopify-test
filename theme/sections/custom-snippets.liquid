@@ -1,0 +1,33 @@
+{%- assign blocks = section.blocks -%}
+
+{%- if blocks -%}
+  <div id="custom-snippets">
+    {%- for block in blocks -%}
+      {%- assign block_settings = block.settings -%}
+      {%- assign block_id = block.id -%}
+      {%- assign code_snippet = block_settings.code_snippet -%}
+      <div id="custom-snippet-{{ block_id }}">{{ code_snippet }}</div>
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Custom Snippets",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "custom_snippet",
+        "name": "Custom Snippet",
+        "settings": [
+          {
+            "type": "html",
+            "id": "code_snippet",
+            "label": "Snippet"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+

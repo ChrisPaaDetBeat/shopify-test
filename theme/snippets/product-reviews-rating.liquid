@@ -1,0 +1,7 @@
+{% assign enable_product_reviews = settings.enable_product_reviews %}
+
+{% if enable_product_reviews %}
+<div class="productReviews-snippet">
+  <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+</div>
+{% endif %}

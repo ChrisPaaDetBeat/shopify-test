@@ -1,0 +1,27 @@
+{% assign enable_product_reviews = settings.enable_product_reviews %}
+
+{% if enable_product_reviews %}
+<div class="productReviewsPopup">
+  <div class="productReviewsPopup_backdrop"></div>
+  <div class="productReviewsPopup_container productReviews">
+    <div class="productReviewsPopup_close">x</div>
+    <div id="shopify-product-reviews" data-id="{{ product.id }}">{{ product.metafields.spr.reviews }}</div>
+  </div>
+</div>
+
+<script>
+  var reviewsSnippet = document.querySelector('.productReviews-snippet');
+  var reviewsPopup = document.querySelector('.productReviewsPopup');
+  var reviewsPopupClose = document.querySelector('.productReviewsPopup_close');
+
+  reviewsSnippet.addEventListener('click', function(event) {
+    document.body.style.overflow = 'hidden';
+    reviewsPopup.classList.add('productReviewsPopup-active')
+  })
+
+  reviewsPopupClose.addEventListener('click', function(event) {
+    document.body.style.overflow = 'unset';
+    reviewsPopup.classList.remove('productReviewsPopup-active')
+  })
+</script>
+{% endif %}

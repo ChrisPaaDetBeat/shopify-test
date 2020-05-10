@@ -1,0 +1,16 @@
+{%- assign enabled_currencies = shop.enabled_currencies -%}
+
+{%- if enabled_currencies.size > 1 -%}
+  <div class="{{ class }}">
+    {%- form 'currency', class: 'currencyConverter_form' -%}
+      <label for="CurrencySelector" class="visually-hidden">{{ 'general.currency.dropdown_label' | t }}</label>
+      <div class="currencySelector_dropdown">
+        <select onchange="this.form.submit()" name="currency" id="CurrencySelector">
+          {%- for currency in enabled_currencies -%}
+            <option value="{{ currency.iso_code }}" {%- if currency == cart.currency -%}selected="true"{%- endif -%}>{{ currency.iso_code }}</option>
+          {%- endfor -%}
+        </select>
+      </div>
+    {%- endform -%}
+  </div>
+{%- endif -%}

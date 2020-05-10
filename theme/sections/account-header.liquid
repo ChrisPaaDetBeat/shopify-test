@@ -1,0 +1,31 @@
+{% assign settings = section.settings %}
+{% assign section_title = settings.section_title %}
+
+{% comment %} Log out link {% endcomment %}
+{% assign log_out_url = routes.account_logout_url %}
+{% assign log_out_text = settings.log_out_text %}
+
+<section class="accountHeader section">
+  <h1>{{ section_title }}</h1>
+  <a class="link" href="{{ log_out_url }}">{{ log_out_text }}</a>
+</section>
+
+{% schema %}
+  {
+    "name": "Account header",
+    "settings": [
+      {
+        "type": "text",
+        "id": "section_title",
+        "label": "My Account",
+        "default": "My Account"
+      },
+      {
+        "type": "text",
+        "id": "log_out_text",
+        "label": "Log out text",
+        "default": "Log out"
+      }
+    ]
+  }
+{% endschema %}

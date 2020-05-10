@@ -1,0 +1,23 @@
+{% comment %} 
+  Split description based on <hr>
+  - Options: head or tail part of split
+{% endcomment %}
+{% assign visible_part = visible_part %}
+{% assign selected_description = blank %}
+{% assign should_split = false %}
+
+{% if description contains '<hr>' %}
+  {% assign should_split = true %}
+  {% assign split_description = description | split: '<hr>' %}
+  {% assign description_head = split_description | first %}
+  {% assign description_tail = split_description | last %}
+
+  {% comment %} Determine visible part of description {% endcomment %}
+  {% if visible_part == 'head' %}
+    {% assign selected_description = description_head %}
+  {% elsif visible_part == 'tail' %}
+    {% assign selected_description = description_tail %}
+  {% endif %}
+{% endif %}
+
+<div class="product_description">{% if should_split %}{{ selected_description }}{% else %}{{ description }}{% endif %}</div>

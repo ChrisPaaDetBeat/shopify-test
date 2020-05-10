@@ -1,0 +1,73 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign heading = settings.heading %}
+{% assign heading_centered = settings.is_heading_centered %}
+{% assign show_prices = settings.show_prices %}
+
+<section class="featuredProducts section">
+  <div class="container">
+    <header class="section_header text-centered">
+      <h2>{{ heading }}</h2>
+    </header>
+    <div class="featuredProducts_products">
+
+      {% if blocks %}
+        {% for block in blocks %}
+          {% assign block_settings = block.settings %}
+          {% assign product = all_products[block_settings.product] %}
+          {% include 'product-card', product: product, show_prices: show_prices %}
+        {% endfor %}
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Featured Products",
+    "max_blocks": 6,
+    "settings": [
+      {
+        "type": "header",
+        "content": "Header"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Our bestsellers"
+      },
+      {
+        "type": "header",
+        "content": "Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_prices",
+        "label": "Show prices",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "product",
+        "name": "Product",
+        "settings": [
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Select Product"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Featured Products",
+        "category": "Product",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

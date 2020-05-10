@@ -1,0 +1,44 @@
+{% assign settings = section.settings %}
+
+<section class="account section">
+  <header class="account_header section-header text-centered">
+    <h1 class="account_heading">My Addresses</h1>
+    <a class="link" href="{{ routes.account_logout_url }}">Log out</a>
+  </header>
+  <div class="container container-small">
+  
+    <div class="address">
+      {{ customer.default_address | format_address }}
+    </div>
+
+    <p><a href="{{ routes.account_url }}" class="link">Back to account</a></p>
+
+  </div>
+</section>
+
+{% stylesheet %}
+.addresses {
+  display: flex;
+}
+
+.address {
+  border: 1px solid #aaa;
+  border-radius: 2px;
+  padding: 20px;
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 50%;
+  width: 100%;
+  margin-right: 20px;
+}
+.address:last-of-type {
+  margin-right: 0;
+}
+{% endstylesheet %}
+
+{% schema %}
+  {
+    "name": "My addresses",
+    "settings": []
+  }
+{% endschema %}

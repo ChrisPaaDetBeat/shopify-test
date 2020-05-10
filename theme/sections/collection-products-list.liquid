@@ -1,0 +1,56 @@
+{% assign section_settings = section.settings %}
+{% assign count_collection_products = collection.products | size %}
+{% assign text_no_products_found = section_settings.text_no_products_found %}
+{% assign pagination_limit = section_settings.pagination_limit %}
+{% assign products = collection.products | sort: collection.sort_by %}
+
+<section class="section plp_products">
+  <div class="container">
+  <div class="productList">
+    {% if count_collection_products > 0 %}
+      {% paginate collection.products limit: pagination_limit %}
+        {% for product in products %}
+          {% include 'product-card', product: product %}
+        {% endfor %}
+
+        {% comment %} Pagination {% endcomment %}
+        {% include 'pagination' %}
+
+      {% endpaginate %}
+
+    {% else %}
+      {{ text_no_products_found }}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Product list",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "range",
+        "id": "pagination_limit",
+        "min": 6,
+        "max": 50,
+        "step": 1,
+        "label": "Number of products per page",
+        "default": 16
+      },
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "textarea",
+        "id": "text_no_products_found",
+        "label": "No products found text",
+        "default": "No products in this collection."
+      }
+    ]
+  }
+{% endschema %}

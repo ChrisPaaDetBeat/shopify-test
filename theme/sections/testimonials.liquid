@@ -1,0 +1,88 @@
+{%- assign settings = section.settings -%}
+{%- assign blocks = section.blocks -%}
+{%- assign blocks_size = section.blocks | size -%}
+{%- assign section_title = settings.section_title -%}
+
+<section class="testimonials section">
+  {%- if section_title -%}
+    <header class="section_header text-centered">
+      <h2>{{ section_title }}</h2>
+    </header>
+  {%- endif -%}
+  <div class="container">
+    <div class="testimonials_slider">
+      {%- if blocks -%}
+        {%- for block in blocks -%}
+          {%- assign block_id = block.id -%}
+          {%- assign block_settings = block.settings -%}
+          {%- assign review_text = block_settings.review_text -%}
+          {%- assign review_by = block_settings.review_by -%}
+          <div class="testimonial">
+            {% comment %} <img class="testimonial_quote" src="quote-red.svg" alt=""> {% endcomment %}
+            <svg class="testimonial_quote" xmlns="http://www.w3.org/2000/svg" width="112" height="98" viewBox="0 0 112 98"><path fill="currentColor" d="M47.573 0c2.049 0 3.405.998 3.405 2.717 0 1.717-1.717 3.741-3.405 5.1-4.732 3.408-18.017 21.118-18.017 37.802 0 4.407 2.38 8.482 5.092 9.867C37.72 57.176 52 60.253 52 78.267 52 88.827 43.504 98 31.603 98 15.97 98.001 0 86.112 0 63.634 0 27.881 32.961 6.097 38.08 3.382 41.79 1.359 45.222 0 47.574 0zm60 0c2.047 0 3.376.998 3.376 2.717 0 1.717-1.686 3.741-3.375 5.099-4.756 3.41-18.005 21.118-18.005 37.803 0 4.407 2.378 8.481 5.09 9.866C97.728 57.176 112 60.252 112 78.268 112 88.828 103.48 98 91.587 98 75.987 98 60 86.111 60 63.634 60 27.88 92.97 6.097 98.06 3.382 101.794 1.359 105.195 0 107.573 0z"></path></svg>
+            <div class="testimonial_text">{{ review_text }}</div>
+            <div class="testimonial_reviewer">{{ review_by }}</div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    const testimonialsContainer = document.querySelector('.testimonials_slider');
+    const testimonials = new Siema({
+        selector: testimonialsContainer,
+        duration: 250,
+        loop: true,
+        draggable: true,
+        perPage: {
+          320: 1,
+          768: 2,
+          1024: 3
+        },
+        onInit: () => {},
+    });
+
+    setInterval(() => testimonials.next(), 4000);
+  })(document);
+</script>
+
+{% schema %}
+  {
+    "name": "Testimonials",
+    "settings": [
+      {
+        "type": "text",
+        "id": "section_title",
+        "label": "Our customers say"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Block",
+        "settings": [
+          {
+            "type": "textarea",
+            "id": "review_text",
+            "label": "Text"
+          },
+          {
+            "type": "text",
+            "id": "review_by",
+            "label": "Review by"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Testimonials",
+        "category": "Promotional",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

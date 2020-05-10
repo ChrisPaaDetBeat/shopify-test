@@ -1,0 +1,69 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign heading = settings.heading %}
+{% assign subheading = settings.subheading %}
+
+<section class="pageNotFound section">
+
+  <header class="section_header text-centered">
+    <h1>{{ heading }}</h1>
+    <h2 class="pageNotFound_subheading">{{ subheading }}</h2>
+  </header>
+
+  {% if blocks %}
+    <div class="container text-centered">
+      {% for block in blocks %}
+        {% assign block_settings = block.settings %}
+        {% assign button_link = block_settings.button_link %}
+        {% assign button_text = block_settings.button_text %}
+
+        {% if button_link and button_text %}
+        <a class="button button-outline" href="{{ button_link }}">{{ button_text }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</section>
+
+{% schema %}
+  {
+    "name": "Page Not Found",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "textarea",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Page not found"
+      },
+      {
+        "type": "textarea",
+        "id": "subheading",
+        "label": "Subheading",
+        "default": "Sorry, we couldn't find the page you are looking for"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "button",
+        "name": "Button",
+        "settings": [
+          {
+            "type": "text",
+            "id": "button_text",
+            "label": "Text"
+          },
+          {
+            "type": "url",
+            "id": "button_link",
+            "label": "Link"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

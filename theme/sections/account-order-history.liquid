@@ -1,0 +1,224 @@
+{% comment %} Settings {% endcomment %}
+{% assign settings = section.settings %}
+{% assign section_title = settings.title %}
+{% assign no_orders_text = settings.no_orders_text %}
+{% assign order_icon = 'icon-package.png' | asset_img_url: 'medium' %}
+
+{% comment %} Customer {% endcomment %}
+{% assign customer_orders = customer.orders %}
+{% assign customer_orders_size = customer.orders.size %}
+
+{% comment %} Order line item {% endcomment %}
+{% assign order_number_text = settings.order_number %}
+{% assign view_order_text = settings.view_order_text %}
+{% assign order_date_text = settings.order_date_text %}
+{% assign order_total_text = settings.order_total_text %}
+{% assign order_payment_status_text = settings.order_payment_status_text %}
+{% assign order_fulfilment_status_text = settings.order_fulfilment_status_text %}
+
+{% comment %} Button {% endcomment %}
+{% assign view_more_button_text = settings.view_more_button_text %}
+
+<section class="orders section">
+  <header class="section_header" style="margin-bottom: 0;">
+    <h5>
+      <img src="{{ order_icon }}" />
+      <span>{{ section_title }}  ({{ customer_orders_size }})</span>
+    </h5>
+  </header>
+  <div class="ordersList">
+    {% if customer_orders_size > 0 %}
+      {% for order in customer_orders %}
+        {% assign order_number = order.order_number | prepend: '#' %}
+        {% assign order_url = order.customer_url %}
+        {% assign order_date = order.created_at | date: "%b %d, %Y" %}
+        {% assign order_items = order.line_items %}
+        {% assign order_total_price = order.total_price | money %}
+        {% assign order_financial_status = order.financial_status %}
+
+        <div class="order">
+          <div class="order_summary">
+            <div class="order_number">{{ order_number_text }}: {{ order_number }}</div>
+
+            {% if view_order_text %}
+            <a class="order_link" href="{{ order_url }}">{{ view_order_text }}</a>
+            {% endif %}
+
+          </div>
+          <div class="order_info">
+            <div class="order_infoColumn">
+              <div>{{ order_date_text }}</div>
+              <strong>{{ order_date }}</strong>
+            </div>
+            <div class="order_infoColumn">
+              <div>{{ order_total_text }}</div>
+              <strong>{{ order_total_price }}</strong>
+            </div>
+            <div class="order_infoColumn">
+              <div>{{ order_payment_status_text }}</div>
+              <strong>{{ order_financial_status | capitalize }}</strong>
+            </div>
+
+          </div>
+          <div class="order_details">
+
+
+            {% for line_item in order_items %}
+              {% assign item_url = line_item.url %}
+              {% assign item_image = line_item.image %}
+              {% comment %} {% assign item_title = line_item.title %} {% endcomment %}
+              {% assign item_title = line_item.product.title %}
+              {% assign item_variant_title = line_item.variant.title %}
+              {% assign item_price = line_item.price %}
+              {% assign item_has_only_default_variant = line_item.product.has_only_default_variant %}
+
+              {% comment %} {%- if line_item.fulfillment -%}
+              <div class="order_fulfilment">
+                {%- assign created_at = line_item.fulfillment.created_at | time_tag: format: 'date' -%}
+                {{ 'customer.order.fulfilled_at_html' | t: date: created_at }}
+                <div>
+                  {%- if line_item.fulfillment.tracking_url -%}
+                    <a href="{{ line_item.fulfillment.tracking_url }}">
+                      {{ 'customer.order.track_shipment' | t }}
+                    </a>
+                  {%- endif -%}
+                  <div>
+                    {{ line_item.fulfillment.tracking_company }}
+                    {%- if line_item.fulfillment.tracking_number -%} #{{ line_item.fulfillment.tracking_number }} {%- endif -%}
+                  </div>
+                </div>
+              </div>
+              {%- endif -%} {% endcomment %}
+
+              <div class="productCard card">
+                <a href="{{ item_url }}">
+                  <div class="productCard_images">
+                    <img class="lazy productCard_image" src="{{ item_image | img_url: '600x', format: 'pjpg', scale: 1.5 }}">
+                  </div>
+                </a>
+                <div class="productCard_details">
+                  <a class="productCard_title" href="{{ item_url }}">
+                    <span>{{ item_title }}</span>
+                    {% unless item_has_only_default_variant %}
+                    <span style="font-weight: normal;">{{ item_variant_title }}</span>
+                    {% endunless %}
+                  </a>
+                  <div class="productCard_pricing">
+                    <span>{{- item_price | money -}}</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+
+      <a class="button button-outline" id="load-more-orders">{{ view_more_button_text }}</a>
+    {% else %}
+      <div class="orderList_emptyText">{{ no_orders_text }}</div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% if customer_orders_size > 0 %}
+<script>
+  /**
+  * Load more orders
+  */
+  var orderList = document.querySelector('.ordersList');
+  var orders  = orderList.querySelectorAll('.order');
+  var loadMoreBtn =  document.querySelector('#load-more-orders');
+  var maxItems = 3;
+  var hiddenClass = "order-hidden";
+
+  [].forEach.call(orders, function(order, idx){
+    if (idx > maxItems - 1) {
+      order.classList.add(hiddenClass);
+    }
+  });
+
+  loadMoreBtn.addEventListener('click', function() {
+    [].forEach.call(document.querySelectorAll('.' + hiddenClass), function(order, idx){
+      if (idx < maxItems - 1) {
+        order.classList.remove(hiddenClass);
+      }
+
+      if (document.querySelectorAll('.' + hiddenClass).length === 0) {
+        loadMoreBtn.style.display = 'none';
+      }
+    });
+  });
+</script>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Order history",
+    "class": "orderHistory",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Order history",
+        "default": "Order history"
+      },
+      {
+        "type": "text",
+        "id": "no_orders_text",
+        "label": "No orders yet",
+        "default": "You haven't placed any orders yet."
+      },
+      {
+        "type": "header",
+        "content": "Button (View more)"
+      },
+      {
+        "type": "text",
+        "id": "view_more_button_text",
+        "label": "Button text",
+        "default": "View more"
+      },
+      {
+        "type": "header",
+        "content": "Order line item"
+      },
+      {
+        "type": "text",
+        "id": "order_number",
+        "label": "Order number",
+        "default": "Order number"
+      },
+      {
+        "type": "text",
+        "id": "view_order_text",
+        "label": "View order",
+        "default": "View order"
+      },
+      {
+        "type": "text",
+        "id": "order_date_text",
+        "label": "Order date",
+        "default": "Order date"
+      },
+      {
+        "type": "text",
+        "id": "order_total_text",
+        "label": "Total",
+        "default": "Total"
+      },
+      {
+        "type": "text",
+        "id": "order_payment_status_text",
+        "label": "Payment status",
+        "default": "Payment status"
+      },
+      {
+        "type": "text",
+        "id": "order_fulfilment_status_text",
+        "label": "Fulfilment status",
+        "default": "Fulfilment status"
+      }
+    ]
+  }
+{% endschema %}

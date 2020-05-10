@@ -1,0 +1,5 @@
+{% assign google_site_verification_content = settings.google_site_verification_content %}
+
+{%- if google_site_verification_content != blank -%}
+<meta name="google-site-verification" content="{{- google_site_verification_content -}}" />
+{%- endif -%}

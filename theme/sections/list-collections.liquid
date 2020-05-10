@@ -1,0 +1,91 @@
+{% comment %} Settings {% endcomment %}
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign button_text = settings.button_text_view_collection %}
+{% assign products_singular = settings.products_singular %}
+{% assign products_plural = settings.products_plural %}
+
+{% if blocks %}
+  {% for block in blocks %}
+    {% assign block_settings = block.settings %}
+    {% assign collection = collections[block_settings.collection] %}
+    {% assign collection_products = collection.products | sort: 'bestselling' %}
+    {% assign collection_title = collection.title %}
+    {% assign collection_link = collection.url %}
+    {% assign collection_image = collection.image %}
+    {% assign product_count = collection_products | size %}
+    {% assign collection_products_limit = 8 %}
+
+    {% if product_count > 0 %}
+      <section class="listCollections section">
+        <div class="container">
+        <header class="section_header text-centered">
+          <h2 class="listCollections_collectionTitle">{{ collection_title }}</h2>
+          <div>{{ product_count }} {{ product_count | pluralize: products_singular, products_plural }}</div>
+        </header>
+        <div class="productList">
+          {% for product in collection_products limit: collection_products_limit %}
+            {% include 'product-card', product: product %}
+          {% endfor %}
+        </div>
+
+        {% unless product_count < collection_products_limit %}
+        <div class="listCollections_browser">
+          <a href="{{ collection_link }}" class="button button-outline">{{ button_text }}</a>
+        </div>
+        {% endunless %}
+
+      </section>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Collection list",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "text",
+        "id": "products_singular",
+        "label": "Product (Singular)",
+        "default": "Product",
+        "info": "If number of products is 1"
+      },
+      {
+        "type": "text",
+        "id": "products_plural",
+        "label": "Products (Plural)",
+        "default": "Products",
+        "info": "If number of products is 0 or above 1"
+      },
+      {
+        "type": "header",
+        "content": "Button"
+      },
+      {
+        "type": "text",
+        "id": "button_text_view_collection",
+        "label": "Button Text",
+        "default": "Browse selection"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Select collection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+

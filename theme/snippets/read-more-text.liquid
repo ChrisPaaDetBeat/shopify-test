@@ -1,0 +1,12 @@
+{% assign expanded_description = text %}
+{% assign description_split = expanded_description | split: ' ' %}
+{% assign description_size = description_split.size %}
+
+{% if expanded_description != blank %}
+<div class="expandableText">
+  <div class="expandableText_container">
+    <div class="expandableText_text">{{ expanded_description }}</div>
+    <a class="expandableText_button link" href="#">{{ read_more_text }}</a>
+  </div>
+</div>
+{% endif %}

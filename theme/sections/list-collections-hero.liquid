@@ -1,0 +1,49 @@
+{% assign section_settings = section.settings %}
+{% assign collection_title = section_settings.title %}
+{% assign collection_description = section_settings.description %}
+{% assign collection_image = section_settings.image %}
+{% assign read_more_text = settings.read_more_button_text %}
+
+<section class="collectionHero section">
+  <div class="container">
+    <div class="collectionHero_main">
+      {% include 'responsive-image', image: collection_image %}
+      <h1 class="collectionHero_title"></h1>
+    </div>
+    <div class="collectionHero_description">
+      {% if collection_description %} {% include 'read-more-text' text: collection_description, read_more_text: read_more_text %} {% endif %}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Hero banner",
+    "settings": [
+      {
+        "type": "header",
+        "content": "text"
+      },
+      {
+        "type": "textarea",
+        "id": "title",
+        "label": "Title",
+        "default": "Shop our collection"
+      },
+      {
+        "type": "textarea",
+        "id": "description",
+        "label": "Description"
+      },
+      {
+        "type": "header",
+        "content": "Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image (Desktop/Tablet)",
+        "info": "Recommended 1440px width"
+      }
+    ]
+  }
+{% endschema %}

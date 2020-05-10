@@ -1,0 +1,233 @@
+{%- assign settings = section.settings -%}
+{%- assign blocks = section.blocks -%}
+
+<section class="aboutGallery section">
+  <div class="container">
+
+    <div class="gallery">
+      <div class="galleryImages">
+
+        {% comment %} Images {% endcomment %}
+        {%- if blocks -%}
+          <div class="galleryImages_inner">
+            {%- for block in blocks -%}
+              {% include 'responsive-image', image: block.settings.image %}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {% comment %} Dots navigation {% endcomment %}
+        {%- if blocks.size > 1 -%}
+          <div class="galleryDots">
+            {%- for block in blocks -%}
+                <div style="width: calc(100% / {{ blocks.size }});" class="galleryDot {% if forloop.first %}galleryDot-active{% endif %}"></div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {% comment %} Arrows {% endcomment %}
+        {%- if blocks.size > 1 -%}
+          <a class="galleryButton galleryButton-prev" href="#">
+            <img class="lazy" data-src="{{ 'icon-chevron-left-white.png' | asset_img_url: 'master' }}" alt="Arrow left">
+          </a>
+          <a class="galleryButton galleryButton-next" href="#">
+            <img class="lazy" data-src="{{ 'icon-chevron-right-white.png' | asset_img_url: 'master' }}" alt="Arrow right">
+          </a>
+        {%- endif -%}
+      
+      </div>
+    </div>
+
+  
+  </div>
+</section>
+
+{% stylesheet 'scss' %}
+  .gallery {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    padding: 0 20px;
+
+    @media (min-width: 768px) {
+      padding: 0 40px;
+    }
+  }
+
+  .galleryImages {
+    position: relative;
+  }
+
+  .galleryImages img,
+  .galleryImages picture {
+    width: 100%;
+  }
+
+  .galleryButton {
+    opacity: 0;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #333;
+    z-index: 1;
+    display: block;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    max-width: 50px;
+    width: 100%;
+    transition: opacity 300ms ease;
+
+    img {
+      max-width: 10px;
+      width: 100%;
+
+      @media (min-width: 768px) {
+        max-width: 15px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      height: 80px;
+      line-height: 80px;
+      max-width: 80px;
+    }
+  }
+
+  .gallery:hover .galleryButton {
+    opacity: 1;
+    transition: opacity 300ms ease;
+  }
+
+  .galleryButton-prev {
+    left: 0;
+  }
+  .galleryButton-next {
+    right: 0;
+  }
+
+  .galleryDots {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding-top: 20px;
+    width: 100%;
+  }
+
+  .galleryDot {
+    height: 2px;
+    min-width: auto;
+    background-color: #c2c2c2;
+    outline: 0;
+    cursor: pointer;
+  }
+  .galleryDot-active {
+    background-color: #333;
+  }
+{% endstylesheet %}
+
+{% if blocks.size > 1 %}
+<script>
+  window.Slider = (function() {
+    let gallery = null
+    let galleryContainer = null
+    let galleryPreviousButton = null
+    let galleryNextButton = null
+
+    function init(selector) {
+      if (typeof selector === "undefined") {
+        return
+      }
+
+      let galleryNode = document.querySelector(selector)
+      gallery = new Siema({
+        selector: galleryNode.querySelector('.galleryImages_inner'),
+        perPage: 1,
+        startIndex: 0,
+        loop: true,
+        draggable: true,
+        onInit: function() {},
+        onChange: function() {
+          update('.galleryDot', 'galleryDot-active')
+        }
+      })
+
+      galleryContainer = galleryNode.querySelector('.galleryImages_inner')
+      galleryPreviousButton = galleryNode.querySelector('.galleryButton-prev')
+      galleryNextButton = galleryNode.querySelector('.galleryButton-next')
+      
+      galleryPreviousButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        gallery.prev(1);
+      })
+
+      galleryNextButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        gallery.next(1);
+      })
+
+      let galleryDots = document.querySelectorAll('.galleryDot')
+      let galleryDotsLength = galleryDots.length
+      for(let i=0; i < galleryDotsLength; i++) {
+        let dot = galleryDots[i];
+        dot.addEventListener('click', function(event) {
+          goTo(event, i)
+        });
+      }
+
+      gallery.resizeHandler()
+    }
+
+    function update(selector, activeClass) {
+      let selectorLength = document.querySelectorAll(selector).length
+      for(let i = 0; i < selectorLength; i++) {
+        let addOrRemove = gallery.currentSlide === i ? 'add' : 'remove'
+        document.querySelectorAll(selector)[i].classList[addOrRemove](activeClass)
+      }
+    }
+
+    function goTo(event, i) {
+      event.preventDefault()
+      gallery.goTo(i)
+    }
+
+    function destroy() {
+      gallery.destroy()
+      gallery = null
+      galleryContainer = null
+      galleryPreviousButton = null
+      galleryNextButton = null
+    }
+
+    return {
+      init: init,
+      destroy: destroy
+    }
+  })
+
+  window.sliderGallery = new Slider()
+  sliderGallery.init('.galleryImages')
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Gallery",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "block-image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Recommended size: 2880 x 1620 pixels"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,67 @@
+{%- assign settings = section.settings -%}
+{%- assign quote = settings.quote -%}
+{%- assign link_text = settings.link_text -%}
+{%- assign link_url = settings.link_url -%}
+
+<section class="section aboutQuote">
+  <div class="aboutQuote_container">
+    {%- if quote -%}<h1 class="aboutQuote_text">{{ quote }}</h1>{%- endif -%}
+    {%- if link_text and link_url -%}<a class="link link-large" href="{{ link_url }}">{{ link_text }}</a>{%- endif -%}
+  </div>
+</section>
+
+{% stylesheet 'scss' %}
+  .aboutQuote {
+    padding: 0;
+
+    @media (min-width: 768px) {
+      padding: 50px 0;
+    }
+  }
+
+  .aboutQuote_container {
+    display: block;
+    max-width: 100ch;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .aboutQuote_text {
+    display: block;
+    font-size: 2.2rem;
+    line-height: 1.5;
+  }
+{% endstylesheet %}
+
+{% schema %}
+  {
+    "name": "Quote",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "textarea",
+        "id": "quote",
+        "label": "Quote"
+      },
+      {
+        "type": "header",
+        "content": "Link"
+      },
+      {
+        "type": "text",
+        "id": "link_text",
+        "label": "Link text"
+      },
+      {
+        "type": "url",
+        "id": "link_url",
+        "label": "Link url"
+      }
+    ]
+  }
+{% endschema %}

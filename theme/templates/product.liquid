@@ -1,0 +1,18 @@
+{% include 'breadcrumb' %}
+
+<section class="product section">
+  <div class="product_container container">
+    <div class="product_gallery">
+      {% include 'product-gallery' %}
+    </div>
+    {% section 'product-details' %}
+  </div>
+</div>
+
+{% section 'usp-bar' %}
+{% if product.description contains '<hr>' %} {% section 'product-detailed-description' %} {% endif %}
+{% section 'collection-based-content' %}
+{% section 'related-products' %}
+{% section 'product-flip-blocks' %}
+{% include 'product-reviews-popup' %}
+{% include 'product-quick-add' %}

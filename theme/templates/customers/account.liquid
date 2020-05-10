@@ -1,0 +1,10 @@
+{% include 'breadcrumb' %}
+
+<div class="accountSection">
+  {% section 'account-header' %}
+  {% section 'account-details' %}
+  {% if settings.enable_recharge %}
+    {% section 'account-recharge' %}
+  {% endif %}
+  {% section 'account-order-history' %}
+</div>

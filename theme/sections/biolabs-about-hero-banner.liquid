@@ -1,0 +1,118 @@
+{%- assign settings = section.settings -%}
+{%- assign heading = settings.heading -%}
+{%- assign text = settings.text -%}
+{%- assign image_desktop = settings.image_desktop -%}
+{%- assign image_mobile = settings.image_mobile -%}
+
+<section class="section aboutHero">
+  {% if text %}<div class="aboutHero_text">{{ text }}</div>{% endif %}
+  {% comment %} {% include 'responsive-image', image: image_desktop, phone_image: image_mobile, phone_width: 320 %} {% endcomment %}
+  <div class="aboutHero_bgImage" style="background: url('{{ image_desktop | img_url: 'master', format: 'pjpg', scale: 1.5 }}');"></div>
+  {% if heading %}<h1 class="aboutHero_heading">{{ heading }}</h1>{% endif %}
+</section>
+
+{% stylesheet 'scss' %}
+  .aboutHero {
+    padding: 0;
+    margin: 0;
+
+    @media (min-width: 768px) {
+      margin: 0 0 50px;
+    }
+  }
+
+  .aboutHero_bgImage {
+    min-height: calc(100vh - 101px); // 101px= header height
+    height: 100%;
+    width: auto;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-position: center center; 
+    background-size: cover;
+  }
+
+  .aboutHero_text {
+    position: relative;
+    top: unset;
+    left: unset;
+    transform: unset;
+    width: 100%;
+    text-align: center;
+    color: inherit;
+    font-size: 1.8rem;
+    line-height: 1;
+    padding: 40px 20px;
+
+    @media (min-width: 768px) {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -40%);
+      color: #fff;
+      padding: 0 20px;
+    }
+  }
+
+  .aboutHero_heading {
+    position: relative;
+    top: unset;
+    left: unset;
+    transform: unset;
+    color: inherit;
+    width: 100%;
+    text-align: center;
+    padding: 60px 20px 0;
+    margin: 0;
+    font-size: 2.2rem;
+    line-height: 1.5;
+
+    @media (min-width: 768px) {
+      position: absolute;
+      top: calc(40% + 75px);
+      left: 50%;
+      transform: translate(-50%, -40%);
+      color: #fff;
+      max-width: 75ch;
+      padding: 0 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+  {
+    "name": "Hero banner",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "text",
+        "id": "text",
+        "label": "Text",
+        "default": "Our Story"
+      },
+      {
+        "type": "textarea",
+        "id": "heading",
+        "label": "Heading"
+      },
+      {
+        "type": "header",
+        "content": "Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_desktop",
+        "label": "Image (Desktop/Tablet)",
+        "info": "Recommended 1200px width"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_mobile",
+        "label": "Image (Mobile)",
+        "info": "Recommended 768px width"
+      }
+    ]
+  }
+{% endschema %}

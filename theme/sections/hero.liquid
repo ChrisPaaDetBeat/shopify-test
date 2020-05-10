@@ -1,0 +1,629 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign blocks_count = section.blocks.size %}
+
+{% if blocks %}
+<section class="hero section">
+  <div class="hero_container">
+
+    {% for block in blocks %}
+      {% assign block_settings = block.settings %}
+      {% assign block_id = block.id %}
+      {% assign block_type = block.type %}
+
+      {% if block_type == 'image' %}
+        {% comment %} Overlay {% endcomment %}
+        {% assign overlay_active = block_settings.enable_overlay %}
+        {% assign overlay_color = block_settings.overlay_color %}
+        {% assign overlay_opacity = block_settings.overlay_opacity | append: '%' %}
+
+        {% comment %} Images {% endcomment %}
+        {% assign image_desktop = block_settings.image_desktop %}
+        {% assign image_mobile = block_settings.image_mobile %}
+
+        {% comment %} Text positions {% endcomment %}
+        {% assign text_alignment = block_settings.text_alignment | prepend: 'text-align: ' | append: ';' %}
+        {% assign text_position_vertical = block_settings.text_position_vertical | prepend: 'align-items: ' | append: ';' %}
+        {% assign text_position_horisontal = block_settings.text_position_horisontal | prepend: 'justify-content: ' | append: ';' %}
+        {% assign text_colour = block_settings.text_colour | prepend: 'color: ' | append: ';' %}
+
+        {% comment %} Text {% endcomment %}
+        {% assign heading = block_settings.heading %}
+        {% assign subheading = block_settings.subheading %}
+
+        {% comment %} Buttons {% endcomment %}
+        {% assign button_1_text = block_settings.button_1_text %}
+        {% assign button_1_url = block_settings.button_1_url %}
+        {% assign button_2_text = block_settings.button_2_text %}
+        {% assign button_2_url = block_settings.button_2_url %}
+        {% assign button_1_colour = block_settings.button_1_colour %}
+        {% assign button_2_colour = block_settings.button_2_colour %}
+        
+        <div class="hero_block{% if blocks_count > 1 %} hero_block-half{% endif %} hero_block-image" id="hero_block-{{ block_id }}">
+          {% include 'responsive-image', image: image_desktop, phone_image: image_mobile %}
+          <div class="hero_content" style="{{ text_alignment }} {{ text_position_horisontal }} {{ text_position_vertical }} {% if overlay_active %}background-color: {{ overlay_color | hex_to_rgba: overlay_opacity }};{%- endif -%}">
+            <div style="{{ text_colour }}">
+              <div class="hero_heading">{{ heading }}</div>
+              <div class="hero_subheading">{{ subheading }}</div>
+
+              {%- if button_1_url and button_1_text -%}
+                <a class="hero_button button {{ button_1_colour }}" href="{{ button_1_url }}">{{ button_1_text }}</a>
+              {%- endif -%}
+
+              {%- if button_2_url and button_2_text -%}
+                <a class="hero_button button {{ button_2_colour }}" href="{{ button_2_url }}">{{ button_2_text }}</a>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block_type == 'video' %}
+        {% comment %} Video {% endcomment %}
+        {% assign desktop_poster = block_settings.video_poster_desktop | img_url: 'master', format: 'pjpg' %}
+        {% assign mobile_poster = block_settings.video_poster_mobile | img_url: 'master', format: 'pjpg' %}
+        {% assign desktop_mp4 = block_settings.video_url_desktop_mp4 %}
+        {% assign desktop_webm = block_settings.video_url_desktop_webm %}
+        {% assign mobile_mp4 = block_settings.video_url_mobile_mp4 %}
+        {% assign mobile_webm = block_settings.video_url_mobile_webm %}
+
+        {% comment %} Overlay {% endcomment %}
+        {% assign overlay_active = block_settings.enable_overlay %}
+        {% assign overlay_color = block_settings.overlay_color %}
+        {% assign overlay_opacity = block_settings.overlay_opacity | append: '%' %}
+
+        {% comment %} Text {% endcomment %}
+        {% assign heading = block_settings.heading | escape %}
+        {% assign subheading = block_settings.subheading | escape %}
+        {% assign text_alignment = block_settings.text_alignment | prepend: 'text-align: ' | append: ';' %}
+        {% assign text_position_vertical = block_settings.text_position_vertical | prepend: 'align-items: ' | append: ';' %}
+        {% assign text_position_horisontal = block_settings.text_position_horisontal | prepend: 'justify-content: ' | append: ';' %}
+        {% assign text_colour = block_settings.text_colour | prepend: 'color: ' | append: ';' %}
+
+        {% comment %} Buttons {% endcomment %}
+        {% assign button_link_1 = block_settings.button_link_1 %}
+        {% assign button_link_2 = block_settings.button_link_2 %}
+        {% assign button_text_1 = block_settings.button_text_1 %}
+        {% assign button_text_2 = block_settings.button_text_2 %}
+        {% assign button_1_colour = block_settings.button_1_colour %}
+        {% assign button_2_colour = block_settings.button_2_colour %}
+
+        <div class="hero_block{% if blocks_count > 1 %} hero_block-half{% endif %} hero_block-video">
+
+          <video class="hero_video-desktop" muted autoplay loop playsinline
+            {% if desktop_poster %}poster="{{ desktop_poster }}"{% endif %}>
+            <source src="{{- desktop_mp4 -}}" type="video/mp4">
+            <source src="{{- desktop_webm -}}" type="video/webm">
+            {{- error_message -}}
+          </video>
+
+          <video class="hero_video-mobile" muted autoplay loop playsinline
+            {% if mobile_poster %}poster="{{ mobile_poster }}"{% endif %}>
+            <source src="{{- mobile_mp4 -}}" type="video/mp4">
+            <source src="{{- mobile_webm -}}" type="video/webm">
+            {{- error_message -}}
+          </video>
+
+          <div class="hero_content" style="{{ text_alignment }} {{ text_position_horisontal }} {{ text_position_vertical }} {% if overlay_active %}background-color: {{ overlay_color | hex_to_rgba: overlay_opacity }};{%- endif -%}">
+            <div style="{{ text_colour }}">
+              <div class="hero_heading">{{ heading }}</div>
+              <div class="hero_subheading">{{ subheading}}</div>
+
+              {% if button_link_1 and button_text_1 %}
+                <a class="hero_button button {{ button_1_colour }}" href="{{ button_link_1 }}">{{- button_text_1 -}}</a>
+              {% endif %}
+
+              {% if button_link_2 and button_text_2 %}
+                <a class="hero_button button {{ button_2_colour }}" href="{{ button_link_2 }}">{{- button_text_2 -}}</a>
+              {% endif %}
+            </div>
+          </div>
+
+        </section>
+      {% endif %}
+      
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Hero",
+    "max_blocks": 2,
+    "settings": [],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Options"
+          },
+          {
+            "type": "header",
+            "content": "Overlay"
+          },
+          {
+              "type": "checkbox",
+              "id": "enable_overlay",
+              "label": "Enable overlay",
+              "default": true
+          },
+          {
+            "type": "select",
+            "id": "overlay_color",
+            "label": "Overlay color",
+            "default": "#000",
+            "options": [
+              {
+                "value": "#000",
+                "label": "Black"
+              },
+              {
+                "value": "#fff",
+                "label": "White"
+              }
+            ]
+          },
+          {
+            "type": "range",
+            "id": "overlay_opacity",
+            "min": 5,
+            "max": 50,
+            "step": 5,
+            "unit": "%",
+            "label": "Overlay opacity",
+            "default": 25
+          },
+          {
+            "type": "header",
+            "content": "Images"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_desktop",
+            "label": "Image (Desktop/Tablet)",
+            "info": "Recommended 1440px width"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Image (Mobile)",
+            "info": "Recommended 768px width"
+          },
+          {
+            "type": "header",
+            "content": "Text"
+          },
+          {
+            "type": "textarea",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "textarea",
+            "id": "subheading",
+            "label": "Subheading"
+          },
+          {
+            "type": "header",
+            "content": "Text options"
+          },
+          {
+            "type": "color",
+            "id": "text_colour",
+            "label": "Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "select",
+            "id": "text_position_vertical",
+            "label": "Text position (Vertical)",
+            "default": "flex-start",
+            "options": [
+              {
+                "value": "flex-start",
+                "label": "Top"
+              },
+              {
+                "value": "center",
+                "label": "Middle"
+              },
+              {
+                "value": "flex-end",
+                "label": "Bottom"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_position_horisontal",
+            "label": "Text position (Horisontal)",
+            "default": "flex-start",
+            "options": [
+              {
+                "value": "flex-start",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "flex-end",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "Button 1"
+          },
+          {
+            "type": "text",
+            "id": "button_1_text",
+            "label": "Text",
+            "default": "Shop now"
+          },
+          {
+            "type": "url",
+            "id": "button_1_url",
+            "label": "Link"
+          },
+          {
+            "type": "select",
+            "id": "button_1_colour",
+            "label": "Button color",
+            "default": "button-white",
+            "options": [
+              {
+                "value": "button",
+                "label": "Primary"
+              },
+              {
+                "value": "button-white",
+                "label": "White"
+              },
+              {
+                "value": "button-outline",
+                "label": "Outline"
+              },
+              {
+                "value": "button-outlineWhite",
+                "label": "Outline with white background"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "Button 2"
+          },
+          {
+            "type": "text",
+            "id": "button_2_text",
+            "label": "Text",
+            "default": "Shop now"
+          },
+          {
+            "type": "url",
+            "id": "button_2_url",
+            "label": "Link"
+          },
+          {
+            "type": "select",
+            "id": "button_2_colour",
+            "label": "Button color",
+            "default": "button-white",
+            "options": [
+              {
+                "value": "button",
+                "label": "Primary"
+              },
+              {
+                "value": "button-white",
+                "label": "White"
+              },
+              {
+                "value": "button-outline",
+                "label": "Outline"
+              },
+              {
+                "value": "button-outlineWhite",
+                "label": "Outline with white background"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "video",
+        "name": "Video",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Overlay"
+          },
+          {
+              "type": "checkbox",
+              "id": "enable_overlay",
+              "label": "Enable overlay",
+              "default": true
+          },
+          {
+            "type": "select",
+            "id": "overlay_color",
+            "label": "Overlay color",
+            "default": "#000",
+            "options": [
+              {
+                "value": "#000",
+                "label": "Black"
+              },
+              {
+                "value": "#fff",
+                "label": "White"
+              }
+            ]
+          },
+          {
+            "type": "range",
+            "id": "overlay_opacity",
+            "min": 5,
+            "max": 50,
+            "step": 5,
+            "unit": "%",
+            "label": "Overlay opacity",
+            "default": 25
+          },
+          {
+            "type": "header",
+            "content": "Text options"
+          },
+          {
+            "type": "color",
+            "id": "text_colour",
+            "label": "Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "select",
+            "id": "text_position_vertical",
+            "label": "Text position (Vertical)",
+            "default": "flex-start",
+            "options": [
+              {
+                "value": "flex-start",
+                "label": "Top"
+              },
+              {
+                "value": "center",
+                "label": "Middle"
+              },
+              {
+                "value": "flex-end",
+                "label": "Bottom"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_position_horisontal",
+            "label": "Text position (Horisontal)",
+            "default": "flex-start",
+            "options": [
+              {
+                "value": "flex-start",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "flex-end",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "Text"
+          },
+          {
+            "type": "textarea",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Heading"
+          },
+          {
+            "type": "textarea",
+            "id": "subheading",
+            "label": "Subheading",
+            "default": "Subheading"
+          },
+          {
+            "type": "header",
+            "content": "Button 1"
+          },
+          {
+            "type": "text",
+            "id": "button_text_1",
+            "label": "Button text",
+            "default": "Shop Now"
+          },
+          {
+            "type": "url",
+            "id": "button_link_1",
+            "label": "Button link",
+            "default": "/collections"
+          },
+          {
+            "type": "select",
+            "id": "button_1_colour",
+            "label": "Button color",
+            "default": "button-white",
+            "options": [
+              {
+                "value": "button",
+                "label": "Primary"
+              },
+              {
+                "value": "button-white",
+                "label": "White"
+              },
+              {
+                "value": "button-outline",
+                "label": "Outline"
+              },
+              {
+                "value": "button-outlineWhite",
+                "label": "Outline with white background"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "Button 2"
+          },
+          {
+            "type": "text",
+            "id": "button_text_2",
+            "label": "Button text",
+            "default": "Shop Now"
+          },
+          {
+            "type": "url",
+            "id": "button_link_2",
+            "label": "Button link",
+            "default": "/collections"
+          },
+          {
+            "type": "select",
+            "id": "button_2_colour",
+            "label": "Button color",
+            "default": "button-white",
+            "options": [
+              {
+                "value": "button",
+                "label": "Primary"
+              },
+              {
+                "value": "button-white",
+                "label": "White"
+              },
+              {
+                "value": "button-outline",
+                "label": "Outline"
+              },
+              {
+                "value": "button-outlineWhite",
+                "label": "Outline with white background"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "Video posters"
+          },
+          {
+            "type": "image_picker",
+            "id": "video_poster_desktop",
+            "label": "Desktop/Tablet",
+            "info": "Recommended 1440px width"
+          },
+          {
+            "type": "image_picker",
+            "id": "video_poster_mobile",
+            "label": "Mobile",
+            "info": "Recommended 768px width"
+          },
+          {
+            "type": "header",
+            "content": "Video (Desktop/tablet)"
+          },
+          {
+            "type": "textarea",
+            "id": "video_url_desktop_mp4",
+            "label": ".mp4",
+            "info": "*Required",
+            "default": "https://storage.googleapis.com/cdn.nordgreen.com/videos/hero_banner.mp4"
+          },
+          {
+            "type": "textarea",
+            "id": "video_url_desktop_webm",
+            "label": ".webm",
+            "info": "*Required",
+            "default": "https://storage.googleapis.com/cdn.nordgreen.com/videos/hero_banner.webm"
+          },
+          {
+            "type": "header",
+            "content": "Video (Mobile)"
+          },
+          {
+            "type": "textarea",
+            "id": "video_url_mobile_mp4",
+            "label": ".mp4",
+            "info": "*Required",
+            "default": "https://storage.googleapis.com/cdn.nordgreen.com/videos/Mobile_Banner.mp4"
+          },
+          {
+            "type": "textarea",
+            "id": "video_url_mobile_webm",
+            "label": ".webm",
+            "info": "*Required",
+            "default": "https://storage.googleapis.com/cdn.nordgreen.com/videos/Mobile_Banner.webm"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Hero",
+        "category": "Content",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

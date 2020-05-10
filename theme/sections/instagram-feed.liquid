@@ -1,0 +1,160 @@
+{% assign settings = section.settings %}
+{% assign title = settings.title %}
+{% assign instagram_username = settings.instagram_username %}
+{% assign show_instagram_username = settings.show_instagram_username %}
+{% assign instagram_items = settings.instagram_items %}
+{% assign instagram_items_per_row = settings.instagram_items_per_row %}
+{% assign button_text = settings.button_text %}
+{% assign button_url = settings.button_url %}
+{% assign calculate_item_width = 100 | divided_by: instagram_items_per_row  %}
+
+{% if instagram_username %}
+<section class="instagramGallery section">
+  {% if title or show_instagram_username %}
+  <header class="section_header text-centered">
+    <h2>{{ title }}</h2>
+    {% if show_instagram_username %}
+    <a class="link link-large" href="https://instagram.com/{{ instagram_username }}" target="_blank">@{{ instagram_username }}</a>
+    {% endif %}
+  </header>
+  {% endif %}
+  <div class="container">
+    <div id="instagram-feed"></div>
+    {% if button_text and button_url %}<a class="instagramGallery_button button" href="{{ button_url }}" target="_blank">{{ button_text }}</a>{% endif %}
+  </div>
+</section>
+
+<style>
+.instagramGallery {
+  text-align: center;
+}
+
+.instagramGallery header {
+  width: 100%;
+}
+
+.instagramGallery_button {
+  margin-top: 25px;
+}
+
+.instagram_gallery {
+  display: flex;
+  flex-flow: wrap row;
+  padding: 0 10px;
+}
+@media (min-width: 768px) {
+  .instagram_gallery {
+    padding: 0;
+  }
+}
+
+.instagram-image,
+.instagram-video,
+.instagram-sidecar {
+  max-width: calc(50% - 20px);
+  width: 100%;
+  margin: 10px;
+}
+@media (min-width: 768px) {
+  .instagram-image,
+  .instagram-video,
+  .instagram-sidecar {
+    max-width: calc({{ calculate_item_width }}% - 20px);
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Instagram feed
+  var $jscomp=$jscomp||{};$jscomp.scope={},$jscomp.owns=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},$jscomp.assign="function"==typeof Object.assign?Object.assign:function(t,e){for(var s=1;s<arguments.length;s++){var i=arguments[s];if(i)for(var o in i)$jscomp.owns(i,o)&&(t[o]=i[o])}return t},$jscomp.ASSUME_ES5=!1,$jscomp.ASSUME_NO_NATIVE_MAP=!1,$jscomp.ASSUME_NO_NATIVE_SET=!1,$jscomp.defineProperty=$jscomp.ASSUME_ES5||"function"==typeof Object.defineProperties?Object.defineProperty:function(t,e,s){t!=Array.prototype&&t!=Object.prototype&&(t[e]=s.value)},$jscomp.getGlobal=function(t){return"undefined"!=typeof window&&window===t?t:"undefined"!=typeof global&&null!=global?global:t},$jscomp.global=$jscomp.getGlobal(this),$jscomp.polyfill=function(t,e,s,i){if(e){for(s=$jscomp.global,t=t.split("."),i=0;i<t.length-1;i++){var o=t[i];o in s||(s[o]={}),s=s[o]}(e=e(i=s[t=t[t.length-1]]))!=i&&null!=e&&$jscomp.defineProperty(s,t,{configurable:!0,writable:!0,value:e})}},$jscomp.polyfill("Object.assign",function(t){return t||$jscomp.assign},"es6","es3");var InstagramFeed=function(){var t={host:"https://www.instagram.com/",username:"",tag:"",container:"",display_profile:!0,display_biography:!0,display_gallery:!0,display_igtv:!1,get_data:!1,callback:null,styling:!0,items:8,items_per_row:4,margin:.5,image_size:640},e={150:0,240:1,320:2,480:3,640:4};return function(s){this.options=Object.assign({},t),this.options=Object.assign(this.options,s),this.is_tag=""==this.options.username,this.valid=!0,""==this.options.username&&""==this.options.tag?(console.error("InstagramFeed: Error, no username or tag defined."),this.valid=!1):this.options.get_data||""!=this.options.container?this.options.get_data&&"function"!=typeof this.options.callback&&(console.error("InstagramFeed: Error, invalid or undefined callback for get_data"),this.valid=!1):(console.error("InstagramFeed: Error, no container found."),this.valid=!1),this.get=function(t){var e=this.is_tag?this.options.host+"explore/tags/"+this.options.tag:this.options.host+this.options.username,s=new XMLHttpRequest,i=this;s.onload=function(o){4===s.readyState&&(200===s.status?(o=s.responseText.split("window._sharedData = ")[1].split("<\/script>")[0],null===(o=(o=JSON.parse(o.substr(0,o.length-1))).entry_data.ProfilePage||o.entry_data.TagPage||null)?(console.log(e),console.error("InstagramFeed: Request error. No data retrieved: "+s.statusText)):(o=o[0].graphql.user||o[0].graphql.hashtag,t(o,i))):console.error("InstagramFeed: Request error. Response: "+s.statusText))},s.open("GET",e,!0),s.send()},this.display=function(t){var s,i,o,n,a;this.options.styling?(s=" style='text-align:center;'",i=" style='border-radius:10em;width:15%;max-width:125px;min-width:50px;'",o=" style='font-size:1.2em;'",n=" style='font-size:1em;'",a=" style='margin:"+this.options.margin+"% "+this.options.margin+"%;width:"+(100-2*this.options.margin*this.options.items_per_row)/this.options.items_per_row+"%;float:left;'"):(s="",i="",o="",n="",a="");var r="";if(this.options.display_profile&&(r=r+"<div class='instagram_profile'"+s+"><img class='instagram_profile_image' src='"+t.profile_pic_url+"' alt='"+t.username+" profile pic'"+i+" />",r=this.is_tag?r+"<p class='instagram_tag'"+o+"><a href='https://www.instagram.com/explore/tags/"+this.options.tag+"' rel='noopener' target='_blank'>#"+this.options.tag+"</a></p>":r+"<p class='instagram_username'"+o+">@"+t.full_name+" (<a href='https://www.instagram.com/"+this.options.username+"' rel='noopener' target='_blank'>@"+this.options.username+"</a>)</p>",!this.is_tag&&this.options.display_biography&&(r+="<p class='instagram_biography'"+n+">"+t.biography+"</p>"),r+="</div>"),this.options.display_gallery)if(o=void 0!==e[this.options.image_size]?e[this.options.image_size]:e[640],void 0!==t.is_private&&!0===t.is_private)r+="<p class='instagram_private'><strong>This profile is private</strong></p>";else{for(i=(n=(t.edge_owner_to_timeline_media||t.edge_hashtag_to_media).edges).length>this.options.items?this.options.items:n.length,r+="<div class='instagram_gallery'>",s=0;s<i;s++){var l="https://www.instagram.com/p/"+n[s].node.shortcode;switch(n[s].node.__typename){case"GraphSidecar":var p="sidecar",c=n[s].node.thumbnail_resources[o].src;break;case"GraphVideo":p="video",c=n[s].node.thumbnail_src;break;default:p="image",c=n[s].node.thumbnail_resources[o].src}this.is_tag&&(t.username=""),r+="<a href='"+l+"' class='instagram-"+p+"' rel='noopener' target='_blank'>",r+="<img src='"+c+"' alt='"+t.username+" instagram image "+s+"'"+a+" />",r+="</a>"}r+="</div>"}if(this.options.display_igtv&&void 0!==t.edge_felix_video_timeline&&(i=(t=t.edge_felix_video_timeline.edges).length>this.options.items?this.options.items:t.length,0<t.length)){for(r+="<div class='instagram_igtv'>",s=0;s<i;s++)r+="<a href='https://www.instagram.com/p/"+t[s].node.shortcode+"' rel='noopener' target='_blank'>",r+="<img src='"+t[s].node.thumbnail_src+"' alt='"+this.options.username+" instagram image "+s+"'"+a+" />",r+="</a>";r+="</div>"}this.options.container.innerHTML=r},this.run=function(){this.get(function(t,e){e.options.get_data?e.options.callback(t):e.display(t)})},this.valid&&this.run()}}();Object.keys||(Object.keys=function(){var t=Object.prototype.hasOwnProperty,e=!{toString:null}.propertyIsEnumerable("toString"),s="toString toLocaleString valueOf hasOwnProperty isPrototypeOf propertyIsEnumerable constructor".split(" "),i=s.length;return function(o){if("object"!=typeof o&&("function"!=typeof o||null===o))throw new TypeError("Object.keys called on non-object");var n,a=[];for(n in o)t.call(o,n)&&a.push(n);if(e)for(n=0;n<i;n++)t.call(o,s[n])&&a.push(s[n]);return a}}()),"function"!=typeof Object.assign&&Object.defineProperty(Object,"assign",{value:function(t,e){if(null==t)throw new TypeError("Cannot convert undefined or null to object");for(var s=Object(t),i=1;i<arguments.length;i++){var o=arguments[i];if(null!=o)for(var n in o)Object.prototype.hasOwnProperty.call(o,n)&&(s[n]=o[n])}return s},writable:!0,configurable:!0});
+
+  // Initiate feed
+  (function(){
+    new InstagramFeed({
+      'username': '{{ instagram_username }}',
+      'container': document.getElementById("instagram-feed"),
+      'display_profile': false,
+      'display_biography': false,
+      'display_gallery': true,
+      'callback': null,
+      'styling': false,
+      'items': {{ instagram_items }},
+      'items_per_row': {{ instagram_items_per_row }},
+      'margin': 0
+    });
+  })();
+});
+</script>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Instagram gallery",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Stay up to date"
+      },
+      {
+        "type": "header",
+        "content": "Instagram options"
+      },
+      {
+        "type": "text",
+        "id": "instagram_username",
+        "label": "Instagram username"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_instagram_username",
+        "label": "Show Instagram username",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "instagram_items",
+        "min": 3,
+        "max": 20,
+        "step": 1,
+        "unit": "pcs",
+        "label": "Number of posts to show",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "instagram_items_per_row",
+        "min": 3,
+        "max": 12,
+        "step": 1,
+        "unit": "pcs",
+        "label": "Posts per row",
+        "default": 4
+      },
+      {
+        "type": "header",
+        "content": "Button"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Text",
+        "default": "Follow us on Instagram"
+      },
+      {
+        "type": "url",
+        "id": "button_url",
+        "label": "Link"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Instagram gallery",
+        "category": "Content",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

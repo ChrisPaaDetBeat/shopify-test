@@ -1,0 +1,5 @@
+{% assign favicon = settings.favicon %}
+
+{%- if favicon -%}
+  <link rel="shortcut icon" href="{{ favicon | img_url: '32x32' }}" type="image/png" />
+{%- endif -%}

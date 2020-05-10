@@ -1,0 +1,47 @@
+{% assign settings = section.settings %}
+{% assign show_social_sharing = settings.enable_social_sharing %}
+
+{% comment %} Article {% endcomment %}
+{% assign article_title = article.title %}
+{% assign article_created_at = article.created_at | time_tag: format: 'date' %}
+{% assign article_image = article.image %}
+{% assign article_image_alt = article.image.alt %}
+{% assign article_content = article.content %}
+
+<section class="article section">
+  <header class="container text-centered">
+    <h1>{{ article_title }}</h1>
+    <div class="article_createdAt">{{ article_created_at }}</div>
+    <div class="article_featuredImage">
+      {% include 'responsive-image', image: article_image %}
+      {% comment %} <div class="article_credit">
+        {% include 'icons', id: 'camera' %}
+        <span class="article_creditName">{{ article_image_alt }}</span>
+      </div> {% endcomment %}
+    </div>
+    {% if show_social_sharing %}
+      {% include 'social-sharing' %}
+    {% endif %}
+  </header>
+  <div class="article_content container">
+    {{ article_content }}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Article",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_social_sharing",
+        "label": "Show social sharing",
+        "default": false
+      }
+    ]
+  }
+{% endschema %}

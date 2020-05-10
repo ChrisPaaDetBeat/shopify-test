@@ -1,0 +1,37 @@
+{% assign chargebee_site_name = settings.chargebee_site_name %}
+{% assign frequency_label = settings.subscriptions_label %}
+{% assign subscriptions_button = settings.subscriptions_button %}
+{% assign subscription_plans = product.variants %}
+{% assign subscriptions_plans_first = product.variants[0].option2 %}
+
+<div style="margin: 20px 0;">
+  <label for"id" style="padding-bottom: 5px; display: block; font-weight: bold;">{{ frequency_label }}</label>
+  <div class="select-styled">
+    <select class="subscription-options" id="id" name="id">
+      {%- for plan in subscription_plans -%}
+        {%- assign forloop_first = forloop.first -%}
+        {%- assign plan_frequency = plan.option1 -%}
+        {%- assign plan_id = plan.option2 -%}
+        {%- assign plan_sku = plan.sku -%}
+        <option value="{{ plan_sku }}" cb-plan-id="{{ plan_id }}" {%- if forloop_first -%}selected{%- endif -%}>{{ plan_frequency }}</option>
+      {%- endfor -%}
+    </select>
+  </div>
+</div>
+
+<a class="subscription-btn button button-block" href="javascript:void(0)">{{ subscriptions_button }}</a>
+
+<script>
+  // Chargebee subscriptions
+  var subscriptionOptions = document.querySelector('.subscription-options');
+  var subscriptionButton = document.querySelector('.subscription-btn');
+
+  subscriptionButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    var idx = subscriptionOptions.selectedIndex;
+    var planID = subscriptionOptions.options[idx].getAttribute('cb-plan-id');
+    var selectedProduct = cbInstance.initializeProduct(planID);
+    cart.replaceProduct(selectedProduct);
+    cart.proceedToCheckout();
+  });
+</script>

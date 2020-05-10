@@ -1,0 +1,167 @@
+{% assign settings = section.settings %}
+{% assign page_title = page.title %}
+{% assign page_content = page.content %}
+{% assign form_id = 'ContactForm' %}
+
+{% assign form_input_label_name = settings.form_input_label_name %}
+{% assign form_input_label_order_no = settings.form_input_label_order_no %}
+{% assign form_input_label_email = settings.form_input_label_email %}
+{% assign form_input_label_phone = settings.form_input_label_phone %}
+{% assign form_input_label_message = settings.form_input_label_message %}
+{% assign form_button_submit_text = settings.form_button_submit_text %}
+
+{% comment %} Form Validation {% endcomment %}
+{% assign form_input_email_error_text = settings.form_input_email_error_text %}
+{% assign form_input_message_error_text = settings.form_input_message_error_text %}
+{% assign form_success_text = settings.form_success_text %}
+
+<section class="page section">
+  <header class="section_header text-centered">
+    <h1>{{ page_title }}</h1>
+  </header>
+  <div class="page_content container">{{ page_content }}</div>
+  <div class="page_content container">
+
+    {% form 'contact', id: form_id, class: 'contactForm' %}
+
+      {% assign form_errors = form.errors %}
+      {% assign form_email = form.email %}
+      {% assign form_phone = form.phone %}
+      {% assign form_body = form.body %}
+      {% assign comment_succesfully_posted = form.posted_successfully? %}
+
+      {% comment %} If customer is signed in {% endcomment %}
+      {% assign customer_name = customer.name %}
+      {% assign customer_email = customer.email %}
+      {% assign customer_phone = customer.phone %}
+
+      {% if comment_succesfully_posted %}
+        <div class="formMessage formMessage-success">{{ form_success_text }}</div>
+      {%- endif -%}
+
+      <div class="formGroups">
+
+        {% comment %} Input Name {% endcomment %}
+        <div class="formGroup formGroup-half">
+          <label class="label" for="{{ form_id }}-name">{{ form_input_label_name }}</label>
+          <input class="input" type="text" id="{{ form_id }}-name" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer_name }}{% endif %}">
+        </div>
+
+
+        {% comment %} Input Order Number {% endcomment %}
+        <div class="formGroup formGroup-half">
+          <label class="label" for="{{ form_id }}-order-number">{{ form_input_label_order_no }}</label>
+          <input class="input" type="text" id="{{ form_id }}-order-number" name="contact[order-number]" value="">
+        </div>
+
+        {% comment %} Input E-mail {% endcomment %}
+        <div class="formGroup formGroup-half">
+          <label class="label" for="{{ form_id }}-email">{{ form_input_label_email }} <span aria-hidden="true">*</span></label>
+          <input
+            class="input"
+            type="email"
+            id="{{ form_id }}-email"
+            name="contact[email]"
+            autocorrect="off"
+            autocapitalize="off"
+            value="{% if form_email %}{{ form_email }}{% elsif customer %}{{ customer_email }}{% endif %}"
+            >
+            {% if form_errors contains 'email' %}
+              <span class="input_message-error">{{ form_input_label_email }} {{ form_input_email_error_text }}.</span>
+            {% endif %}
+        </div>
+
+        {% comment %} Input Phone {% endcomment %}
+        <div class="formGroup formGroup-half">
+          <label class="label" for="{{ form_id }}-phone">{{ form_input_label_phone }}</label>
+          <input class="input" type="tel" id="{{ form_id }}-phone" name="contact[phone]" pattern="[0-9\-]*" value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer_phone }}{% endif %}">
+        </div>
+
+        {% comment %} Input Message {% endcomment %}
+        <div class="formGroup">
+          <label class="label" for="{{ form_id }}-message">{{ form_input_label_message }} <span aria-hidden="true">*</span></label>
+          <textarea class="input" rows="10" id="{{ form_id }}-message" name="contact[body]" required>{% if form_body %}{{ form_body }}{% endif %}</textarea>
+          {% if form_errors contains 'body' %}
+            <span class="input_message-error">{{ form_input_label_message }} {{ form_input_message_error_text }}.</span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% comment %} Submit {% endcomment %}
+      <input type="submit" class="button" value="{{ form_button_submit_text }}">
+
+    {% endform %}
+
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Contact form",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Form",
+        "info": "Customer support e-mail found [here](/admin/settings/general)"
+      },
+      {
+        "type": "text",
+        "id": "form_input_label_name",
+        "label": "Label Name",
+        "default": "Name"
+      },
+      {
+        "type": "text",
+        "id": "form_input_label_order_no",
+        "label": "Label Order Number",
+        "default": "Order number"
+      },
+      {
+        "type": "text",
+        "id": "form_input_label_email",
+        "label": "Label E-mail",
+        "default": "E-mail"
+      },
+      {
+        "type": "text",
+        "id": "form_input_label_phone",
+        "label": "Label Phone",
+        "default": "Phone"
+      },
+      {
+        "type": "text",
+        "id": "form_input_label_message",
+        "label": "Label Message",
+        "default": "Message"
+      },
+      {
+        "type": "text",
+        "id": "form_button_submit_text",
+        "label": "Button text",
+        "default": "Send"
+      },
+      {
+        "type": "header",
+        "content": "Form Validation"
+      },
+      {
+        "type": "text",
+        "id": "form_input_email_error_text",
+        "label": "E-mail error text",
+        "default": "must be formatted as an email."
+      },
+      {
+        "type": "text",
+        "id": "form_input_message_error_text",
+        "label": "Message error text",
+        "default": "can't be blank."
+      },  
+      {
+        "type": "textarea",
+        "id": "form_success_text",
+        "label": "Success text",
+        "default": "Thanks for contacting us. We'll get back to you as soon as possible."
+      }
+    ]
+  }
+{% endschema %}

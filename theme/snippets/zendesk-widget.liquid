@@ -1,0 +1,14 @@
+
+{% assign zendesk_key = settings.zendesk_key %}
+
+{% if zendesk_key %}
+<script>
+function ZendeskChat() {
+  var script = document.createElement("script");
+  script.id ="ze-snippet"
+  script.src = "https://static.zdassets.com/ekr/snippet.js?key={{- zendesk_key -}}";
+  document.head.appendChild(script);
+}
+setTimeout(ZendeskChat, 5000);
+</script>
+{% endif %}

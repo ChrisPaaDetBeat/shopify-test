@@ -1,0 +1,178 @@
+{% assign section_settings = section.settings %}
+{% assign footer_links = section_settings.footer_linklist %}
+{% assign logo = section_settings.logo %}
+{% assign logo_width = section_settings.logo_width | append: 'px;' %}
+{% assign logo_alt = section_settings.logo.alt %}
+{% assign brand_name = shop.name %}
+{% assign background_color = section_settings.background_color %}
+
+{% comment %} Additional columns {% endcomment %}
+{% assign section_title_1 = section_settings.section_title_1 %}
+{% assign richtext_1 = section_settings.richtext_1 %}
+{% assign section_title_2 = section_settings.section_title_2 %}
+{% assign richtext_2 = section_settings.richtext_2 %}
+
+{% assign payment_method_label = section_settings.payment_method_label %}
+{% assign payment_method_icons_width = section_settings.payment_method_icons_width %}
+
+{% capture icon_chevron %}
+  <img class="icon_chevron" alt="Chevron icon" src="{{ 'icon-chevron.svg' | asset_url }}" />
+{% endcapture %}
+
+{% capture icon_chevron_black %}
+  <img class="icon_chevron" alt="Chevron icon black" src="{{ 'icon-chevron-black.svg' | asset_url }}" />
+{% endcapture %}
+
+<footer id="footer" class="footer" style="background-color: {{ background_color }};">
+  
+  <a class="button_toTop" title="Go to top">{{ icon_chevron }}</a>
+
+  <section class="footer_sections">
+    {% include 'social-icons' %}
+  </section>
+
+  <section class="footer_sections">
+
+    {% if section_title_1 != blank and richtext_1 != blank %}
+    <div class="footer_section">
+      <div class="footer_sectionTitle">
+        <div>{{ section_title_1 }}</div>
+        <div class="icon_container">{{ icon_chevron_black }}</div>
+      </div>
+      <div class="footer_links">{{ richtext_1 }}</div>
+    </div>
+    {% endif %}
+
+    {% if section_title_2 != blank and richtext_2 != blank %}
+    <div class="footer_section">
+      <div class="footer_sectionTitle">
+        <div>{{ section_title_2 }}</div>
+        <div class="icon_container">{{ icon_chevron_black }}</div>
+      </div>
+      <div class="footer_links">{{ richtext_2 }}</div>
+    </div>
+    {% endif %}
+
+    {% for link in linklists[footer_links].links %}
+      <div class="footer_section">
+
+      {% assign link_title = link.title %}
+      {% assign link_url = link.url %}
+      {% assign child_links = link.links %}
+
+        <div class="footer_sectionTitle">
+          <div>{{ link_title }}</div>
+          <div class="icon_container">{{ icon_chevron_black }}</div>
+        </div>
+
+        <ul class="footer_links list-unstyled">
+        {% for child_link in child_links %}
+
+          {% assign child_link_title = child_link.title %}
+          {% assign child_link_url = child_link.url %}
+
+          <li> <a class="footer_link" href="{{ child_link_url }}">{{ child_link_title }}</a> </li>
+
+        {% endfor %}
+        </ul>
+
+      </div>
+    {% endfor %}
+
+  </section>
+
+  <section class="footer_legal">
+
+    <div class="footer_payments">
+
+      {% if payment_method_label %}<h5>{{ payment_method_label }}</h5>{% endif %}
+
+      <div class="footer_paymentOptions">
+      {% for type in shop.enabled_payment_types %}
+        <div class="paymentOption">
+          <img alt="Payment icon for {{ type | replace: '_', ' ' | capitalize }}" src="{{ type | payment_type_img_url }}" style="width: {{ payment_method_icons_width }}px; height: auto;" />
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+
+    <div class="footer_copyright">&copy; {{ brand_name }} {{ 'now' | date: "%Y" }}</div>
+
+  </section>
+
+</footer>
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color",
+        "default": "#f9f9f9"
+      },
+      {
+        "type": "header",
+        "content": "Additional columns"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_linklist",
+        "label": "Footer Linklist"
+      },
+      {
+        "type": "header",
+        "content": "Additional textarea 1"
+      },
+      {
+        "type": "text",
+        "id": "section_title_1",
+        "label": "Title"
+      },
+      {
+        "type": "richtext",
+        "id": "richtext_1",
+        "label": "Textarea"
+      },
+      {
+        "type": "header",
+        "content": "Additional 2"
+      },
+      {
+        "type": "text",
+        "id": "section_title_2",
+        "label": "Title"
+      },
+      {
+        "type": "richtext",
+        "id": "richtext_2",
+        "label": "Textarea"
+      },
+      {
+        "type": "header",
+        "content": "Payment methods"
+      },
+      {
+        "type": "text",
+        "id": "payment_method_label",
+        "label": "Label",
+        "default": "Our payment methods"
+      },
+      {
+        "type": "range",
+        "id": "payment_method_icons_width",
+        "min": 35,
+        "max": 70,
+        "step": 5,
+        "unit": "px",
+        "label": "Icon width",
+        "default": 40
+      }
+    ]
+  }
+{% endschema %}

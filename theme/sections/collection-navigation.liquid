@@ -1,0 +1,113 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign collection_navigation = settings.collection_navigation %}
+{% assign disable_navigation = settings.disable_navigation %}
+{% assign mobile_layout = settings.mobile_layout %}
+
+{% if disable_navigation != true %}
+  <section class="submenu section">
+    <div class="container">
+
+      {% comment %} Horisontal scroll menu {% endcomment %}
+      <nav class="submenu_links{% if mobile_layout == 'tabs_menu' or mobile_layout == 'dropdown_menu' %} hidden{% endif %}" role="collection_navigation">
+        {% for link in linklists[collection_navigation].links %}
+          {% assign link_url = link.url %}
+          {% assign link_title = link.title %}
+          {% assign link_active = link.active %}
+
+          <a href="{{ link_url }}" class="submenu_link {% if link_active %}submenu_link-active{% endif %}">{{ link_title }}</a>
+
+        {% endfor %}
+      </nav>
+
+      {% comment %} Tabs menu {% endcomment %}
+      {% if mobile_layout == 'tabs_menu' %}
+      <nav class="collection_nav collection_nav-tabs">
+        <ul>
+          {% for link in linklists[collection_navigation].links %}
+            {% assign link_url = link.url %}
+            {% assign collection_handle = link_url | remove: '/collections/' %}
+            {% assign link_title = link.title %}
+            {% assign link_active = link.active %}
+            {% assign link_collection = collections[collection_handle] %}
+            {% assign collection_count = link_collection.products_count %}
+
+            <li class="{% if link_active %}active{% endif %}">
+              <a href="{{ link_url }}">
+                {{- link_title -}}
+                <span class="count">{{ collection_count }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+      {% endif %}
+
+      {% if mobile_layout == 'dropdown_menu' %}
+      <div class="dropdown dropdown-categories" id="category-dropdown">
+        <a class="dropdown_button" href="#">Se kategorier</a>
+        <nav class="collection_nav collection_nav-dropdown hidden">
+          <ul>
+            {% for link in linklists[collection_navigation].links %}
+              {% assign link_url = link.url %}
+              {% assign collection_handle = link_url | remove: '/collections/' %}
+              {% assign link_title = link.title %}
+              {% assign link_active = link.active %}
+              {% assign link_collection = collections[collection_handle] %}
+              {% assign collection_count = link_collection.products_count %}
+
+              <li class="{% if link_active %}active{% endif %}">
+                <a href="{{ link_url }}">
+                  {{- link_title -}}
+                  <span class="count">{{ collection_count }}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Collection Navigation",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "disable_navigation",
+        "label": "Disable navigation",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "mobile_layout",
+        "label": "Choose layout for menu on phones",
+        "default": "horisontal_menu",
+        "options": [
+          {
+            "value": "horisontal_menu",
+            "label": "Horisontal menu"
+          },
+          {
+            "value": "tabs_menu",
+            "label": "Tabs menu"
+          },
+          {
+            "value": "dropdown_menu",
+            "label": "Dropdown menu"
+          }
+        ]
+      },
+      {
+        "type": "link_list",
+        "id": "collection_navigation",
+        "label": "Select linklist"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,90 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign block_size = blocks.size %}
+{% assign section_title = settings.section_title %}
+{% assign button_text = settings.button_text %}
+{% assign button_url = settings.button_url %}
+
+{% if block_size > 0 %}
+  <section class="trustpilot section">
+
+    {% if section_title %}
+    <header class="section_header text-centered">
+      <h2>{{ section_title }}</h2>
+    </header>
+    {% endif %}
+
+    <div class="container">
+      <div class="trustpilot_reviews">
+        {% for block in blocks %}
+          {% assign block_settings = block.settings %}
+          {% assign image = block_settings.image | img_url: 'master' %}
+          {% assign image_width = block_settings.image_width %}
+
+          <div class="trustpilot_review">
+            <img class="lazy" src="{{ image }}" style="max-width: {{ image_width }}px;" />
+          </div>
+        {% endfor %}
+      </div>
+      {% if button_text and button_url %}<a class="button" href="{{ button_url }}" target="_blank">{{ button_text }}</a>{% endif %}
+    </div>
+  </section>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Trustpilot reviews",
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "section_title",
+        "label": "Section title"
+      },
+      {
+        "type": "header",
+        "content": "Button"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Text",
+        "default": "Read more on Trustpilot"
+      },
+      {
+        "type": "url",
+        "id": "button_url",
+        "label": "Link"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "review",
+        "name": "Review",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "range",
+            "id": "image_width",
+            "min": 50,
+            "max": 400,
+            "step": 10,
+            "unit": "px",
+            "label": "Image width",
+            "default": 300
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Trustpilot reviews",
+        "category": "Promotional",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

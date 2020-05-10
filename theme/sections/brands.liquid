@@ -1,0 +1,111 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign campaign_params = '&utm_medium=banner&utm_campaign=partners' %}
+{% assign show_brands_section = settings.show_brands_section %}
+{% assign utm_source = settings.utm_source %}
+{% assign text_color = settings.text_color %}
+{% assign background_color = settings.background_color %}
+{% assign brand_heading = settings.brand_heading %}
+
+{% if show_brands_section %}
+<div class="brands" style="background-color: {{ background_color }}; color: {{ text_color }};">
+
+  {% if brand_heading %}<h4 class="brands_heading">{{ brand_heading }}</h4>{% endif %}
+
+  <div class="brands_container">
+    {% for block in section.blocks %}
+      {% assign settings = block.settings %}
+      {% assign name = settings.brand_name %}
+      {% assign logo = settings.brand_logo %}
+      {% assign logo_width = settings.brand_logo_width %}
+      {% assign url = settings.brand_url %}
+
+      <div class="brand_container">
+        <a class="brand" href="{{ url }}?utm_source={{ utm_source }}{{ campaign_params }}" target="_blank" rel="noopener">
+          {% if logo %}
+            <img class="brand_logo" style="max-width: {{ logo_width }}px" src="{{ logo | img_url: '400x' }}" alt="{{ name }}" />
+          {% else %}
+            <span class="brand_name">{{ name }}</span>
+          {% endif %}
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Brands",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_brands_section",
+      "label": "Show brands section",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "brand_heading",
+      "label": "Heading",
+      "default": "Visit our partner brands"
+    },
+    {
+      "type": "text",
+      "id": "utm_source",
+      "label": "UTM Source (Brand name)",
+      "info": "Used to track referrers in Google Analytics"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#222"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        {
+          "type": "text",
+          "id": "brand_name",
+          "label": "Name"
+        },
+        {
+          "type": "image_picker",
+          "id": "brand_logo",
+          "label": "Logo",
+          "info": "PNG image only. Minimum 400px wide"
+        },
+        {
+          "type": "range",
+          "id": "brand_logo_width",
+          "min": 50,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "label": "Logo width",
+          "default": 200
+        },
+        {
+          "type": "text",
+          "id": "brand_url",
+          "label": "URL"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

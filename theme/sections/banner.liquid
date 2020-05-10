@@ -1,0 +1,294 @@
+{% assign settings = section.settings %}
+
+{% comment %} Options {% endcomment %}
+{% assign is_banner_full_width = settings.is_banner_full_width %}
+
+{% comment %} Overlay {% endcomment %}
+{% assign overlay_active = settings.enable_overlay %}
+{% assign overlay_color = settings.overlay_color %}
+{% assign overlay_opacity = settings.overlay_opacity | append: '%' %}
+
+{% comment %} Images {% endcomment %}
+{% assign image_desktop = settings.image_desktop %}
+{% assign image_mobile = settings.image_mobile %}
+
+{% comment %} Text positions {% endcomment %}
+{% assign text_alignment = settings.text_alignment | prepend: 'text-align: ' | append: ';' %}
+{% assign text_position_vertical = settings.text_position_vertical | prepend: 'align-items: ' | append: ';' %}
+{% assign text_position_horisontal = settings.text_position_horisontal | prepend: 'justify-content: ' | append: ';' %}
+{% assign text_colour = settings.text_colour | prepend: 'color: ' | append: ';' %}
+
+{% comment %} Text {% endcomment %}
+{% assign heading = settings.heading %}
+{% assign subheading = settings.subheading %}
+
+{% comment %} Buttons {% endcomment %}
+{% assign button_1_text = settings.button_1_text %}
+{% assign button_1_url = settings.button_1_url %}
+{% assign button_2_text = settings.button_2_text %}
+{% assign button_2_url = settings.button_2_url %}
+{% assign button_1_colour = settings.button_1_colour %}
+{% assign button_2_colour = settings.button_2_colour %}
+
+<section class="heroBanner section">
+  <div class="heroBanner_container{% if is_banner_full_width %} container{% endif %}">
+
+    {% include 'responsive-image', image: image_desktop, phone_image: image_mobile, phone_width: 320 %}
+
+    <div class="heroBanner_content" style="{{ text_alignment }} {{ text_position_horisontal }} {{ text_position_vertical }} {% if overlay_active %}background-color: {{ overlay_color | hex_to_rgba: overlay_opacity }};{%- endif -%}">
+      <div style="{{ text_colour }}">
+
+        <h2 class="heroBanner_heading">{{ heading }}</h2>
+        <h4 class="heroBanner_subheading">{{ subheading }}</h4>
+
+        {%- if button_1_url and button_1_text -%}
+          <a class="heroBanner_button button {{ button_1_colour }}" href="{{ button_1_url }}">{{ button_1_text }}</a>
+        {%- endif -%}
+
+        {%- if button_2_url and button_2_text -%}
+          <a class="heroBanner_button button {{ button_2_colour }}" href="{{ button_2_url }}">{{ button_2_text }}</a>
+        {%- endif -%}
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Banner",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Options"
+      },
+      {
+          "type": "checkbox",
+          "id": "is_banner_full_width",
+          "label": "Full width",
+          "default": false
+      },
+      {
+        "type": "header",
+        "content": "Overlay"
+      },
+      {
+          "type": "checkbox",
+          "id": "enable_overlay",
+          "label": "Enable overlay",
+          "default": true
+      },
+      {
+        "type": "select",
+        "id": "overlay_color",
+        "label": "Overlay color",
+        "default": "#000",
+        "options": [
+          {
+            "value": "#000",
+            "label": "Black"
+          },
+          {
+            "value": "#fff",
+            "label": "White"
+          }
+        ]
+      },
+      {
+        "type": "range",
+        "id": "overlay_opacity",
+        "min": 5,
+        "max": 50,
+        "step": 5,
+        "unit": "%",
+        "label": "Overlay opacity",
+        "default": 25
+      },
+      {
+        "type": "header",
+        "content": "Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_desktop",
+        "label": "Image (Desktop/Tablet)",
+        "info": "Recommended 1200px width"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_mobile",
+        "label": "Image (Mobile)",
+        "info": "Recommended 768px width"
+      },
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "textarea",
+        "id": "heading",
+        "label": "Heading"
+      },
+      {
+        "type": "textarea",
+        "id": "subheading",
+        "label": "Subheading"
+      },
+      {
+        "type": "header",
+        "content": "Text options"
+      },
+      {
+        "type": "select",
+        "id": "text_position_vertical",
+        "label": "Text position (Vertical)",
+        "default": "flex-start",
+        "options": [
+          {
+            "value": "flex-start",
+            "label": "Top"
+          },
+          {
+            "value": "center",
+            "label": "Middle"
+          },
+          {
+            "value": "flex-end",
+            "label": "Bottom"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "text_position_horisontal",
+        "label": "Text position (Horisontal)",
+        "default": "flex-start",
+        "options": [
+          {
+            "value": "flex-start",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "flex-end",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "Text alignment",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "color",
+        "id": "text_colour",
+        "label": "Text colour",
+        "default": "#ffffff"
+      },
+      {
+        "type": "header",
+        "content": "Button 1"
+      },
+      {
+        "type": "text",
+        "id": "button_1_text",
+        "label": "Text",
+        "default": "Shop now"
+      },
+      {
+        "type": "url",
+        "id": "button_1_url",
+        "label": "Link"
+      },
+      {
+        "type": "select",
+        "id": "button_1_colour",
+        "label": "Button color",
+        "default": "button-white",
+        "options": [
+          {
+            "value": "button",
+            "label": "Primary"
+          },
+          {
+            "value": "button-white",
+            "label": "White"
+          },
+          {
+            "value": "button-outline",
+            "label": "Outline"
+          },
+          {
+            "value": "button-outlineWhite",
+            "label": "Outline with white background"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Button 2"
+      },
+      {
+        "type": "text",
+        "id": "button_2_text",
+        "label": "Text",
+        "default": "Shop now"
+      },
+      {
+        "type": "url",
+        "id": "button_2_url",
+        "label": "Link"
+      },
+      {
+        "type": "select",
+        "id": "button_2_colour",
+        "label": "Button color",
+        "default": "button-white",
+        "options": [
+          {
+            "value": "button",
+            "label": "Primary"
+          },
+          {
+            "value": "button-white",
+            "label": "White"
+          },
+          {
+            "value": "button-outline",
+            "label": "Outline"
+          },
+          {
+            "value": "button-outlineWhite",
+            "label": "Outline with white background"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Banner",
+        "category": "Image",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

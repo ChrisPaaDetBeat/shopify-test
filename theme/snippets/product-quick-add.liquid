@@ -1,0 +1,57 @@
+{% comment %} Button text {% endcomment %}
+{% comment %} {% assign button_text_add_to_cart = settings.button_add_to_cart %} {% endcomment %}
+{% assign button_text_sold_out = settings.button_sold_out %}
+{% assign product_quick_add_button_text = settings.product_quick_add_button_text %}
+{% assign enable_product_quick_add = settings.enable_product_quick_add %}
+
+{% assign quickadd_active_product = product.selected_or_first_available_variant %}
+{% assign quickadd_active_product_id = product.selected_or_first_available_variant.id %}
+{% assign quickadd_active_product_available = product.selected_or_first_available_variant.available %}
+
+{% if enable_product_quick_add %}
+<div class="productQuickAdd productQuickAdd-positionTop">
+  <div class="productQuickAdd_container container">
+
+    <div class="productQuickAdd_info">
+      {% comment %} <span class="productQuickAdd_label">Selected:</span> {% endcomment %}
+      <span class="productQuickAdd_title">{{ product.title }}</span>
+      <span class="productQuickAdd_variantTitle">{{ quickadd_active_product.title }}</span>
+    </div>
+
+    {% form "product", product, id: 'product-quickadd-form' %}
+      <input type="hidden" id="id" name="id" value="{{ quickadd_active_product_id }}" />
+
+      {% comment %} {% include 'product-price', class: 'productQuickAdd_price', variant: quickadd_active_product %} {% endcomment %}
+      <div class="product_pricing productQuickAdd_price">
+        <span class="product_price">{{ quickadd_active_product.price | money }}</span>
+      </div>
+
+      {% if quickadd_active_product_available %}
+        <input class="productQuickAdd_button button" type="submit" value="{{ product_quick_add_button_text }}" />
+      {% else %}
+        <input class="productQuickAdd_button button" type="submit" value="{{ button_text_sold_out }}" disabled />
+      {% endif %}
+
+    {% endform %}
+  </div>
+</div>
+
+<script>
+  /**
+   * Fixed quick add bar
+   */
+  const addToCartButton = document.querySelector('#product-atc')
+  const quickAdd = document.querySelector('.productQuickAdd')
+  const headerHeight = document.querySelector('.header').offsetHeight;
+
+  window.addEventListener('scroll', function(event) {
+    event.preventDefault()
+
+    if(addToCartButton.getBoundingClientRect().bottom <= headerHeight) {
+      quickAdd.classList.add('productQuickAdd-active')
+    } else {
+      quickAdd.classList.remove('productQuickAdd-active')
+    }
+  })
+</script>
+{% endif %}

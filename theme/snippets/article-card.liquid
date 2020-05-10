@@ -1,0 +1,31 @@
+{% assign isPageHome = false %}
+{% assign text_colour = text_colour %}
+{% assign article_title = article.title %}
+{% assign article_featured_image = article.image %}
+{% assign article_link = article.url %}
+{% assign article_created_at = article.created_at | date: "%b %d, %Y" %}
+{% comment %} {% assign blog_name = article.url | remove: '/blogs/' | split: '/' | first | capitalize %} {% endcomment %}
+{% comment %} {% assign short_summary = article.excerpt | strip_html | truncate: '110' %} {% endcomment %}
+
+{% if template == 'index' %}
+  {% assign isPageHome = true %}
+{% endif %}
+
+<article class="articleCard card">
+  <div class="articleCard_featuredImage">
+    <a href="{{ article_link }}">
+      {% include 
+        'responsive-image', 
+        image: article_featured_image, 
+        phone_width: 180, 
+        tablet_width: 320, 
+        desktop_width: 320, 
+        class: 'articleCard_image'
+      %}
+    </a>
+  </div>
+  <a href="{{ article_link }}" class="articleCard_details" {% if isPageHome %}style="color: {{ text_colour }};"{% endif %}>
+    <div class="articleCard_title">{{ article_title }}</div>
+  </a>
+  <div class="articleCard_createdAt">{{ article_created_at }}</div>
+</article>

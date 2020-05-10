@@ -1,0 +1,67 @@
+{%- assign settings = section.settings -%}
+{%- assign heading = settings.heading -%}
+{%- assign show_upsell = settings.show_upsell -%}
+{%- assign upsell_collection = collections[settings.upsell_collection].products -%}
+{%- assign products_shown = settings.products_shown -%}
+
+{%- if show_upsell -%}
+<section class="cartUpsell section">
+  <header class="section-header text-centered">
+    <h3>{{ heading }}</h3>
+  </header>
+  <div class="container">
+    <div class="cartUpsell_products">
+      {%- for product in upsell_collection limit: products_shown -%}
+        {%- include 'product-card' with product -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Cart Upsell",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_upsell",
+        "label": "Enable section",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Header"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "You May Also Like..."
+      },
+      {
+        "type": "header",
+        "content": "Collection"
+      },
+      {
+        "type": "collection",
+        "id": "upsell_collection",
+        "label": "Upsell collection"
+      },
+      {
+        "type": "range",
+        "id": "products_shown",
+        "min": 3,
+        "max": 6,
+        "step": 1,
+        "unit": "pcs",
+        "label": "Number of products",
+        "default": 4
+      }
+    ]
+  }
+{% endschema %}

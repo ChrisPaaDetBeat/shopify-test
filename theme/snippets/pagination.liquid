@@ -1,0 +1,32 @@
+{% comment %} Found in theme settings under buttons {% endcomment %}
+{% assign previous_button_text = settings.previous_button_text %}
+{% assign next_button_text = settings.next_button_text %}
+{% assign paginate_pages = paginate.pages %}
+{% assign paginate_previous = paginate.previous %}
+{% assign paginate_next = paginate.next %}
+
+{% comment %} Only render pagination if there's more than 1 page {% endcomment %}
+{% if paginate_pages > 1 %}
+  <div class="pagination">
+    <div class="pagination_container">
+
+      {% comment %} Previous button {% endcomment %}
+      <a class="pagination_button button{% unless paginate_previous.is_link %} button-disabled{% endunless %}" href="{{ paginate_previous.url }}">{{- previous_button_text -}}</a>
+
+      {% comment %} Page nunbers {% endcomment %}
+      <div class="pagination_numbers">
+        {% assign count = paginate_pages %}
+        {% for part in (1..count) %}
+          {% assign index = forloop.index %}
+          <li class="pagination_number{% if paginate.current_page == part %} pagination_number-current{% endif %}">
+            <a class="link" href="{{ paginate.url }}?page={{ index }}">{{ index }}</a>
+          </li>
+        {% endfor %}
+      </div>
+
+      {% comment %} Next button {% endcomment %}
+      <a class="pagination_button button{% unless paginate_next.is_link %} button-disabled{% endunless %}" href="{{ paginate_next.url }}">{{- next_button_text -}}</a>
+
+    </div>
+  </div>
+{% endif %}

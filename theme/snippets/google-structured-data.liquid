@@ -1,0 +1,79 @@
+{% comment %} Organization {% endcomment %}
+<script type="application/ld+json">
+{ "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "{{ settings.google_organization_name }}",
+  "url": "https://{{ shop.domain }}",
+  "logo": "https:{{ settings.google_organization_logo | img_url: 'master' | split: '?' | first }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ settings.google_organization_street_address }}",
+    "addressLocality": "{{ settings.google_organization_city }}",
+    "addressRegion": "{{ settings.google_organization_region }}",
+    "postalCode": "{{ settings.google_organization_zip_code }}",
+    "addressCountry": "{{ settings.google_organization_country }}"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer support",
+    "telephone": "{{ settings.google_organization_support_phone }}",
+    "email": "{{ settings.google_organization_support_email }}"
+  }
+}</script>
+
+{% comment %} Product {% endcomment %}
+{% if template contains 'product' %}
+
+{% comment %} Take into consideration whether product have variants or not {% endcomment %}
+{% assign active_product = product %}
+{% assign active_product_type = product.type %}
+{% assign active_product_title = product.title %}
+{% assign active_product_description = product.description | strip_html | json %}
+
+{% if product.variants %}
+  {% assign active_product = product.selected_variant %}
+{% endif %}
+
+{% assign active_product_sku = active_product.sku %}
+{% assign active_product_url = active_product.url %}
+{% assign active_product_barcode = active_product.barcode %}
+{% assign active_product_image = active_product.featured_image | img_url: 'master' | prepend: 'https:' %}
+{% assign active_product_availability = active_product.available %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ active_product_title }}",
+  "image": [
+    "{{ active_product_image }}"
+  ],
+  "description": {{- active_product_description -}},
+  "sku": "{{ active_product_sku }}",
+  "mpn": "{{ active_product_barcode }}",
+  "brand": {
+      "@type": "Thing",
+      "name": {{ product.vendor | json }}
+    },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ active_product_url | prepend: shop.domain | prepend: 'https://' | json }},
+    "priceCurrency": "{{ shop.currency }}",
+    "price": "{{ active_product.price | divided_by: 100.00 | json }}",
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability": "https://schema.org/{% if active_product_availability %}InStock{% else %}OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": "{{ settings.google_organization_name }}"
+    }
+  }
+}
+</script>
+{%- comment -%} "priceValidUntil": "{{ 'today' | date: '%Y-%m-%d' }}", {%- endcomment -%}
+{% endif %}
+
+{% comment %} Blog {% endcomment %}
+{% if template contains 'blog' %}{% endif %}
+
+{% comment %} Article {% endcomment %}
+{% if template contains 'article' %}{% endif %}

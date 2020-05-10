@@ -1,0 +1,217 @@
+{%- comment -%}
+  Comments may not appear right after they are submitted, either to be checked by Shopify's spam filter
+  or to await moderation. When a comment is submitted, the browser is redirected to a page
+  that includes the new comment id in its URL.
+    Example: http://shopname.myshopify.com/blogs/news/2022072-my-post?comment=3721372
+{%- endcomment -%}
+
+{% assign settings = section.settings %}
+{% assign comments = article.comments %}
+{% assign comments_enabld = blog.comments_enabled? %}
+{% assign comments_is_moderated = blog.moderated? %}
+{% assign comments_status = comment.status %}
+{% assign number_of_comments = 0 %}
+{% assign comments_count = article.comments_count %}
+
+{% comment %} Comments {% endcomment %}
+{% assign comments_singular = settings.comments_singular %}
+{% assign comments_plural = settings.comments_plural %}
+
+{% comment %} Form {% endcomment %}
+{% assign form_title = settings.form_title %}
+{% assign form_input_label_name = settings.form_input_label_name %}
+{% assign form_input_label_email = settings.form_input_label_email %}
+{% assign form_input_label_message = settings.form_input_label_message %}
+{% assign form_button_submit_text = settings.form_button_submit_text %}
+{% assign form_moderated_text = settings.form_moderated_text %}
+
+{% comment %} Form Validation {% endcomment %}
+{% assign form_input_name_error_text = settings.form_input_name_error_text %}
+{% assign form_input_email_error_text = settings.form_input_email_error_text %}
+{% assign form_input_message_error_text = settings.form_input_message_error_text %}
+{% assign form_success_text = settings.form_success_text %}
+
+{% if comments_status == 'pending' %}
+  {% assign number_of_comments = comments_count | plus: 1 %}
+{% else %}
+  {% assign number_of_comments = comments_count %}
+{% endif %}
+
+{% if comments_enabld %}
+  {% if number_of_comments > 0 %}
+    <hr aria-hidden="true">
+    <section class="comments section" id="comments">
+      <header class="section_header container">
+        <h2>{{ number_of_comments }} {{ number_of_comments | pluralize: comments_singular, comments_plural }}</h2>
+      </header>
+      <div class="container">
+
+        {% paginate article.comments by 5 %}
+
+          {% comment %} Temporary show the comment that was just submitted {% endcomment %}
+          {% if comment.status == 'pending' %}
+            {% include 'article-comment' %}
+          {% endif %}
+
+          {% comment %} Show comments {% endcomment %}
+          {% for comment in comments %}
+            {% include 'article-comment' %}
+          {% endfor %}
+
+          {% comment %} {% if paginate.pages > 1 %}
+            {% include 'pagination' %}
+          {% endif %} {% endcomment %}
+
+        </div>
+      {% endpaginate %}
+
+      </div>
+    </section>
+  {% endif %}
+
+  {% comment %} Comments forms {% endcomment %}
+  <hr aria-hidden="true">
+  <section class="commentForm section">
+    <header class="section_header">
+      <h2>{{ form_title }}</h2>
+    </header>
+    <div class="container">
+      {% form 'new_comment', article %}
+
+        {% assign form_errors = form.errors %}
+        {% assign form_author = form.author %}
+        {% assign form_email = form.email %}
+        {% assign form_body = form.body %}
+        {% assign comment_succesfully_posted = form.posted_successfully? %}
+
+        {% if comment_succesfully_posted %}
+          <div class="formMessage formMessage-success">{{ form_success_text }}</div>
+        {%- endif -%}
+
+        <div class="formGroups">
+          <div class="formGroup formGroup-half">
+            <label class="label" for="comment-author">{{ form_input_label_name }}</label>
+            <input type="text" name="comment[author]" id="comment-author" class="input{% if form_errors contains 'author' %} input-error{% endif %}" value="{{ form_author }}">
+            {% if form_errors contains 'author' %}
+              <span class="input_message-error">{{ form_input_label_name }} {{ form_errors.messages['author'] }}.</span>
+            {% endif %}
+          </div>
+          <div class="formGroup formGroup-half">
+            <label class="label" for="comment-email">{{ form_input_label_email }}</label>
+            <input type="email" name="comment[email]" id="comment-email" class="input{% if form_errors contains 'email' %} input-error{% endif %}" value="{{ form_email }}" autocorrect="off" autocapitalize="off">
+            {% if form_errors contains 'email' %}
+              <span class="input_message-error">{{ form_input_label_email }} {{ form_errors.messages['email'] }}.</span>
+            {% endif %}
+          </div>
+          <div class="formGroup">
+            <label class="label" for="comment-body">{{ form_input_label_message}}</label>
+            <textarea rows="5" name="comment[body]" id="comment-body" class="input{% if form_errors contains 'body' %} input-error{% endif %}">{{ form_body }}</textarea>
+            {% if form_errors contains 'body' %}
+              <span class="input_message-error">{{ form_input_label_message }} {{ form_errors.messages['body'] }}.</span>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if comments_is_moderated %}
+          <div class="commentForm_notice colour-grey">{{ form_moderated_text }}</div>
+        {% endif %}
+
+        <input type="submit" class="button" value="{{ form_button_submit_text }}">
+      {% endform %}
+    </div>
+  </section>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Comments",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "text",
+        "id": "comments_singular",
+        "label": "Comment (Singular)",
+        "default": "Comment",
+        "info": "Used if number of comments is 1"
+      },
+      {
+        "type": "text",
+        "id": "comments_plural",
+        "label": "Comments (Plural)",
+        "default": "Comments",
+        "info": "Used if number of comments 0 or above 1"
+      },
+      {
+        "type": "header",
+        "content": "Form"
+      },
+      {
+        "type": "text",
+        "id": "form_title",
+        "label": "Form title",
+        "default": "Leave a comment"
+      },
+      {
+        "type": "text",
+        "id": "form_input_label_name",
+        "label": "Label Name",
+        "default": "Name"
+      },
+      {
+        "type": "text",
+        "id": "form_input_label_email",
+        "label": "Label E-mail",
+        "default": "E-mail"
+      },
+      {
+        "type": "text",
+        "id": "form_input_label_message",
+        "label": "Label Message",
+        "default": "Message"
+      },
+      {
+        "type": "text",
+        "id": "form_button_submit_text",
+        "label": "Button post comment",
+        "default": "Post Comment"
+      },
+      {
+        "type": "textarea",
+        "id": "form_moderated_text",
+        "label": "Moderated text",
+        "default": "Please note, comments must be approved before they are published"
+      },
+      {
+        "type": "header",
+        "content": "Form Validation"
+      },
+      {
+        "type": "text",
+        "id": "form_input_name_error_text",
+        "label": "Name Error text",
+        "default": "can't be blank."
+      },
+      {
+        "type": "text",
+        "id": "form_input_email_error_text",
+        "label": "E-mail error text",
+        "default": "must be formatted as an email."
+      },
+      {
+        "type": "text",
+        "id": "form_input_message_error_text",
+        "label": "Message error text",
+        "default": "can't be blank."
+      },  
+      {
+        "type": "textarea",
+        "id": "form_success_text",
+        "label": "Success text",
+        "default": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated."
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,679 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Vanilla",
+    "theme_version": "1.5.0",
+    "theme_author": "Blazar Capital",
+    "theme_documentation_url": "https:\/\/github.com\/blazarcapital\/",
+    "theme_support_email": "engineering@blazarcapital.com"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "color",
+        "id": "color_headings",
+        "label": "Headings",
+        "default": "#222"
+      },
+      {
+        "type": "color",
+        "id": "color_body_text",
+        "label": "Body text",
+        "default": "#222"
+      },
+      {
+        "type": "color",
+        "id": "color_links",
+        "label": "Links",
+        "default": "#222"
+      },
+      {
+        "type": "header",
+        "content": "Primary Button"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_primary_button",
+        "label": "Background",
+        "default": "#222"
+      },
+      {
+        "type": "color",
+        "id": "color_text_primary_button",
+        "label": "Text",
+        "default": "#fff"
+      },
+      {
+        "type": "header",
+        "content": "White Button"
+      },
+      {
+        "type": "color",
+        "id": "color_text_white_button",
+        "label": "Text",
+        "default": "#222"
+      },
+      {
+        "type": "header",
+        "content": "Form fields"
+      },
+      {
+        "type": "color",
+        "id": "color_text_input",
+        "label": "Text",
+        "default": "#222"
+      },
+      {
+        "type": "color",
+        "id": "color_border_input",
+        "label": "Borders",
+        "default": "#aaa"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_input",
+        "label": "Background",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "color_error_input",
+        "label": "Error",
+        "default": "#e91e63"
+      },
+      {
+        "type": "header",
+        "content": "Label - Default",
+        "info": "Labels applied on products by using product tags field. Must use format label:<name> -> e.g. label:news"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_label_default",
+        "label": "Background color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_text_label_default",
+        "label": "Text color",
+        "default": "#fff"
+      },
+      {
+        "type": "header",
+        "content": "Label - Sale",
+        "info": "Automatically showwn if enabled under Theme Settings > Product card"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_label_sale",
+        "label": "Background color",
+        "default": "#2e3b47"
+      },
+      {
+        "type": "color",
+        "id": "color_text_label_sale",
+        "label": "Text color",
+        "default": "#222"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Headings and buttons"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Font",
+        "default": "merriweather_sans_n4"
+      },
+      {
+        "type": "header",
+        "content": "Body text"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_base_font",
+        "label": "Font",
+        "default": "open_sans_n4"
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Product Page"
+      },
+      {
+        "type": "text",
+        "id": "button_add_to_cart",
+        "label": "Add to cart",
+        "default": "Add to cart",
+        "info": "Used for product pages and product cards"
+      },
+      {
+        "type": "text",
+        "id": "button_sold_out",
+        "label": "Sold out",
+        "default": "Sold out"
+      },
+      {
+        "type": "text",
+        "id": "button_preorder",
+        "label": "Pre-order",
+        "default": "Pre-order",
+        "info": "Product must be tagged with pre-order and set to continue selling when out of stock"
+      },
+      {
+        "type": "header",
+        "content": "Collection pages"
+      },
+      {
+        "id": "previous_button_text",
+        "type": "text",
+        "label": "Previous",
+        "default": "Previous",
+        "info": "Used for pagination on collection and blog pages"
+      },
+      {
+        "id": "next_button_text",
+        "type": "text",
+        "label": "Next",
+        "default": "Next",
+        "info": "Used for pagination on collection and blog pages"
+      },
+      {
+        "id": "read_more_button_text",
+        "type": "text",
+        "label": "Read More",
+        "default": "Read More",
+        "info": "Used for expandable description on collection pages"
+      },
+      {
+        "id": "read_less_button_text",
+        "type": "text",
+        "label": "Read Less",
+        "default": "Read Less",
+        "info": "Used for expandable description on collection pages"
+      }
+    ]
+  },
+  {
+    "name": "Breadcrumb",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_breadcrumb",
+        "label": "Show breadcrumb",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "text",
+        "id": "breadcrumb_home_text",
+        "label": "Home link text",
+        "default": "Home"
+      }
+    ]
+  },
+  {
+    "name": "Product Card",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "is_available_options_enabled",
+        "label": "Enable text to show available variants",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "text",
+        "id": "available_options_text",
+        "label": "Available options text",
+        "default": "finishes available",
+        "info": "Used to show the number of variants available"
+      },
+      {
+        "type": "header",
+        "content": "Labels"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_card_labels",
+        "label": "Enable labels",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "product_card_label_sale",
+        "label": "Label sales",
+        "default": "Sale"
+      }
+    ]
+  },
+  {
+    "name": "Product Reviews",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_product_reviews",
+        "label": "Enable product reviews",
+        "default": false,
+        "info": "Product Reviews app from Shopify is required to display reviews"
+      }
+    ]
+  },
+  {
+    "name": "Product Quick Add Bar",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_product_quick_add",
+        "label": "Enable Quick Add bar",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "product_quick_add_button_text",
+        "label": "Add to cart text",
+        "default": "Buy",
+        "info": "Keep it short as there is minimum space in the bar"
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "social_icons_enabled",
+        "label": "Enable social icons",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "social_logo_height",
+        "min": 20,
+        "max": 64,
+        "step": 4,
+        "unit": "px",
+        "label": "Logo height",
+        "default": 24
+      },
+      {
+        "type": "header",
+        "content": "Twitter"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_url",
+        "label": "Twitter",
+        "info": "http:\/\/twitter.com\/shopify"
+      },
+      {
+        "type": "image_picker",
+        "id": "social_twitter_logo",
+        "label": "Logo",
+        "info": "128 x 128 pixels .png recommended"
+      },
+      {
+        "type": "header",
+        "content": "Facebook"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_url",
+        "label": "Facebook",
+        "info": "https:\/\/www.facebook.com\/shopify"
+      },
+      {
+        "type": "image_picker",
+        "id": "social_facebook_logo",
+        "label": "Logo",
+        "info": "128 x 128 pixels .png recommended"
+      },
+      {
+        "type": "header",
+        "content": "Pinterest"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_url",
+        "label": "Pinterest",
+        "info": "https:\/\/www.pinterest.com\/shopify"
+      },
+      {
+        "type": "image_picker",
+        "id": "social_pinterest_logo",
+        "label": "Logo",
+        "info": "128 x 128 pixels .png recommended"
+      },
+      {
+        "type": "header",
+        "content": "Instagram"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_url",
+        "label": "Instagram",
+        "info": "https:\/\/instagram.com\/shopify"
+      },
+      {
+        "type": "image_picker",
+        "id": "social_instagram_logo",
+        "label": "Logo",
+        "info": "128 x 128 pixels .png recommended"
+      },
+      {
+        "type": "header",
+        "content": "LinkedIn"
+      },
+      {
+        "type": "text",
+        "id": "social_linkedin_url",
+        "label": "LinkedIn",
+        "info": "https:\/\/linkedin.com\/shopify"
+      },
+      {
+        "type": "image_picker",
+        "id": "social_linkedin_logo",
+        "label": "Logo",
+        "info": "128 x 128 pixels .png recommended"
+      },
+      {
+        "type": "header",
+        "content": "YouTube"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_url",
+        "label": "YouTube",
+        "info": "https:\/\/www.youtube.com\/user\/shopify"
+      },
+      {
+        "type": "image_picker",
+        "id": "social_youtube_logo",
+        "label": "Logo",
+        "info": "128 x 128 pixels .png recommended"
+      },
+      {
+        "type": "header",
+        "content": "Vimeo"
+      },
+      {
+        "type": "text",
+        "id": "social_vimeo_url",
+        "label": "Vimeo",
+        "info": "https:\/\/vimeo.com\/shopify"
+      },
+      {
+        "type": "image_picker",
+        "id": "social_vimeo_logo",
+        "label": "Logo",
+        "info": "128 x 128 pixels .png recommended"
+      }
+    ]
+  },
+  {
+    "name": "Cookie Consent",
+    "settings": [
+      {
+        "type": "text",
+        "id": "cookie_consent_cookie_anchor_text",
+        "label": "Cookies link text",
+        "default": "cookies",
+        "info": "Used by {COOKIE}"
+      },
+      {
+        "type": "url",
+        "id": "cookie_consent_privacy_url",
+        "label": "Privacy Policy link",
+        "info": "Used by {COOKIE}"
+      },
+      {
+        "type": "textarea",
+        "id": "cookie_consent_compliance_text",
+        "label": "Text",
+        "default": "We use {COOKIE} to ensure you get the best experience. 🍪",
+        "info": "{COOKIE} will be replaced by with the text and link above to ensure GDPR compliance."
+      },
+      {
+        "type": "text",
+        "id": "cookie_consent_accept_text",
+        "label": "Accept cookies text",
+        "default": "Okay"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Icon",
+        "info": "512 x 512 pixels .png required"
+      }
+    ]
+  },
+  {
+    "name": "Meta",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Meta"
+      },
+      {
+        "type": "textarea",
+        "id": "meta_site_name",
+        "label": "Site name"
+      },
+      {
+        "type": "color",
+        "id": "meta_theme_colour",
+        "label": "Theme colour",
+        "default": "#000000"
+      }
+    ]
+  },
+  {
+    "name": "ReCharge Subscription",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_recharge",
+        "label": "Enable ReCharge subscription",
+        "default": false,
+        "info": "Requires ReCharge app to be installed with products and rulesets setup"
+      }
+    ]
+  },
+  {
+    "name": "Chargebee Subscription",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_chargebee",
+        "label": "Enable Chargebee subscription",
+        "default": false,
+        "info": "Requires Chargebee app to be installed with products synced"
+      },
+      {
+        "type": "text",
+        "id": "chargebee_site_name",
+        "label": "Charge site name"
+      },
+      {
+        "type": "header",
+        "content": "Translations"
+      },
+      {
+        "type": "text",
+        "id": "subscriptions_label",
+        "label": "Plans label",
+        "default": "Delivery every",
+        "info": "Label on product page before subscription plans dropdown"
+      },
+      {
+        "type": "text",
+        "id": "subscriptions_button",
+        "label": "Subscription button",
+        "default": "Subscribe & checkout"
+      }
+    ]
+  },
+  {
+    "name": "Intercom chat widget",
+    "settings": [
+      {
+        "type": "text",
+        "id": "intercom_app_id",
+        "label": "Intercom id"
+      }
+    ]
+  },
+  {
+    "name": "Zendesk chat widget",
+    "settings": [
+      {
+        "type": "text",
+        "id": "zendesk_key",
+        "label": "Zendesk key",
+        "info": "Obtained in Zendesk admin panel. Expected format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      }
+    ]
+  },
+  {
+    "name": "Tracking",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Pinterest"
+      },
+      {
+        "type": "text",
+        "id": "pinterest_account_id",
+        "label": "Account id"
+      },
+      {
+        "type": "text",
+        "id": "pinterest_meta_content",
+        "label": "Meta tag content",
+        "info": "Claim your domain in Pinterest"
+      }
+    ]
+  },
+  {
+    "name": "Google Site Verification",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Google"
+      },
+      {
+        "type": "textarea",
+        "id": "google_site_verification_content",
+        "label": "Meta tag content"
+      }
+    ]
+  },
+  {
+    "name": "Google Structured Data",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Organization"
+      },
+      {
+        "type": "text",
+        "id": "google_organization_name",
+        "label": "Name",
+        "info": "Insert company name as you want it to appear on Google"
+      },
+      {
+        "type": "image_picker",
+        "id": "google_organization_logo",
+        "label": "Logo",
+        "info": "At least 160x90 pixels and at most 1920x1080 pixels"
+      },
+      {
+        "type": "header",
+        "content": "Address"
+      },
+      {
+        "type": "text",
+        "id": "google_organization_street_address",
+        "label": "Street Address",
+        "info": "e.g. Købmagergade 3A, 4"
+      },
+      {
+        "type": "text",
+        "id": "google_organization_city",
+        "label": "City",
+        "info": "e.g. Copenhagen"
+      },
+      {
+        "type": "text",
+        "id": "google_organization_region",
+        "label": "Region\/Province",
+        "info": "e.g. Capital"
+      },
+      {
+        "type": "text",
+        "id": "google_organization_zip_code",
+        "label": "Zip code",
+        "info": "e.g. 1150"
+      },
+      {
+        "type": "text",
+        "id": "google_organization_country",
+        "label": "Country",
+        "info": "e.g. Denmark"
+      },
+      {
+        "type": "header",
+        "content": "Customer support"
+      },
+      {
+        "type": "text",
+        "id": "google_organization_support_phone",
+        "label": "Support phone",
+        "info": "e.g. +4512345678"
+      },
+      {
+        "type": "text",
+        "id": "google_organization_support_email",
+        "label": "Support e-mail",
+        "info": "e.g. support@brand.com"
+      }
+    ]
+  }
+]

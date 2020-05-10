@@ -1,0 +1,38 @@
+{% assign section_settings = section.settings %}
+{% assign preorder_text = section_settings.preorder_text %}
+{% assign product_title = product.title %}
+{% assign product_description = product.description %}
+{% assign active_product = product.selected_or_first_available_variant %}
+{% assign product_id = active_product.id %}
+{% assign product_available = active_product.available %}
+
+{% comment %} Price {% endcomment %}
+{% assign product_price = active_product.price %}
+{% assign product_compare_at_price = active_product.compare_at_price %}
+{% assign product_varies = active_product.price_varies %}
+{% assign is_product_on_sale = false %}
+
+{% if product_compare_at_price > product_price %}
+  {% assign is_product_on_sale = true %}
+{% endif %}
+
+<h1 class="product_title">{{ product_title }}</h1>
+{% include 'product-price', product: active_product %}
+{% include 'product-reviews-rating' %}
+{% include 'product-description', description: product.description, visible_part: 'head' %}
+{% include 'product-form', preorder_text: preorder_text %}
+
+{% schema %}
+  {
+    "name": "Product Details",
+  "class": "product_details",
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "preorder_text",
+        "label": "Pre-order text",
+        "info": "Visible below Add To Cart button"
+      }
+    ]
+  }
+{% endschema %}

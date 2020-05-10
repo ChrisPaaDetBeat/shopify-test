@@ -1,0 +1,17 @@
+{% assign privacy_url = settings.cookie_consent_privacy_url  %}
+{% assign cookie_anchor_text = settings.cookie_consent_cookie_anchor_text | downcase %}
+{% assign accept_text = settings.cookie_consent_accept_text %}
+{% assign compliance_text = settings.cookie_consent_compliance_text %}
+
+{% capture cookies_link %}
+  <a class="link" href="{{ privacy_url }}">{{ cookie_anchor_text }}</a>
+{% endcapture %}
+
+{% assign compliance_text = compliance_text | replace: '{COOKIE}', cookies_link %}
+
+<div class="cookieConsent">
+  <div class="cookieConsent_wrapper">
+    <div class="cookieConsent_text">{{- compliance_text -}}</div>
+    <a id="accept-cookies" class="link link-active" href="#">{{- accept_text -}}</a>
+  </div>
+</div>

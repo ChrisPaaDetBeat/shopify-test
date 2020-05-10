@@ -1,0 +1,78 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign display_icons_above_text = settings.display_icons_above_text %}
+{% assign block_size = blocks.size %}
+
+{% if block_size > 0 %}
+  <section class="uspBar section">
+    <div class="container">
+      <div class="uspBar_inner">
+
+        {% for block in blocks %}
+          {% assign block_settings = block.settings %}
+          {% assign usp_image = block_settings.usp_icon %}
+          {% assign usp_image_width = block_settings.usp_icon_width %}
+          {% assign usp_text = block_settings.usp_title %}
+          {% assign usp_width = 100 | divided_by: block_size %}
+
+          <div class="uspBar_benefit{% if display_icons_above_text %} uspBar_benefit-iconAbove{% endif %}" style="width: {{ usp_width }}%">
+            {% if usp_image %}<img class="lazy uspBar_benefitIcon" src="{{ usp_image | img_url }}" style="width: {{ usp_image_width }}px;" />{% endif %}
+            <span class="uspBar_benefitText">{{ usp_text }}</span>
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "USP Bar",
+    "max_blocks": 4,
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "display_icons_above_text",
+        "label": "Display icons above text",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "usp",
+        "name": "USP",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "usp_icon",
+            "label": "Icon",
+            "info": "Recommended 64x64 pixels"
+          },
+          {
+            "type": "range",
+            "id": "usp_icon_width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "label": "Icon width",
+            "default": 20
+          },
+          {
+            "type": "text",
+            "id": "usp_title",
+            "label": "Title"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "USP Bar",
+        "category": "Promotional",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

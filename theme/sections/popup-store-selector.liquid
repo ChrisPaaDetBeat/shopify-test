@@ -1,0 +1,158 @@
+{%- assign settings = section.settings -%}
+{%- assign enable_store_selector = settings.enable_store_selector -%}
+
+{%- if enable_store_selector -%}
+  {% assign blocks = section.blocks %}
+  {% assign blocks_size = blocks.size %}
+  {% assign enable_store_selector = settings.enable_store_selector %}
+  {% assign popup_title = settings.title %}
+  {% assign popup_description = settings.description %}
+  {% assign label_text = settings.label_text %}
+  {% assign button_text = settings.button_text %}
+  {% assign payment_methods_text = settings.payment_methods_text %}
+  {% assign usp_1_text = settings.usp_1_text %}
+  {% assign usp_2_text = settings.usp_2_text %}
+  {% assign active_store = request.host | prepend: 'https://' %}
+
+  <div class="storesPopup">
+    <div class="storesPopup_container">
+
+      <a class="storesPopup_close" href="#">X</a>
+
+      {% if popup_title %}<h3 class="storesPopup_title">{{ popup_title }}</h3>{% endif %}
+      {% if popup_description != blank %}<p>{{ popup_description }}</p>{% endif %}
+
+      {% comment %} Stores dropdown {% endcomment %}
+      {%- if blocks_size > 0 -%}
+      <div class="storesPopup_options">
+        <label class="label" for="stores-dropdown">{{ label_text }}</label>
+        <div class="select-styled">
+          <select name="stores-dropdown" id="stores-dropdown" current-store-url="{{ active_store }}">
+          {% for block in blocks %}
+            {% assign block_settings = block.settings %}
+            {% assign store_url = block_settings.store_url %}
+            {% assign store_name = block_settings.store_name %}
+            {% assign store_currency = block_settings.store_currency %}
+            
+            <option value="https://{{ store_url }}" {% if forloop.first %}selected{% endif %}>{{ store_name }} {% if store_currency %}({{ store_currency }}){% endif %}</option>
+
+          {% endfor %}
+          </select>
+        </div>
+
+        <button class="storesPopup_button button button-block">{{ button_text }}</button>
+      </div>
+      {%- endif -%}
+
+      <div class="storesPopup_usps">
+        {% if usp_1_text %}<div class="storesPopup_usp">{{ usp_1_text }}</div>{% endif %}
+        {% if usp_2_text %}<div class="storesPopup_usp">{{ usp_2_text }}</div>{% endif %}
+      </div>
+
+      <div class="storesPopup_paymentOptions">
+        {% if payment_methods_text %}<div class="storesPopup_paymentOptionsTitle">{{ payment_methods_text }}</div>{% endif %}
+        {% for type in shop.enabled_payment_types %}
+          <div class="paymentOption">
+            <img alt="Payment icon for {{ type | replace: '_', ' ' | capitalize }}" src="{{ type | payment_type_img_url }}" />
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Store selector",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_store_selector",
+      "label": "Enable popup",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Welcome to Vanilla"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Choose, in the menu below, another language and you'll be taken directly to the new site."
+    },
+    {
+      "type": "text",
+      "id": "label_text",
+      "label": "Label text",
+      "default": "You are currently shopping in"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Go to shop"
+    },
+    {
+      "type": "header",
+      "content": "USPs"
+    },
+    {
+      "type": "text",
+      "id": "usp_1_text",
+      "label": "USP 1",
+      "info": "e.g. Free express delivery and returns"
+    },
+    {
+      "type": "text",
+      "id": "usp_2_text",
+      "label": "USP 2",
+      "info": "e.g. Pay in your local currency"
+    },
+    {
+      "type": "header",
+      "content": "Payment methods"
+    },
+    {
+      "type": "text",
+      "id": "payment_methods_text",
+      "label": "Payment methods",
+      "default": "Payment methods"
+    },
+    {
+      "type": "header",
+      "content": "Block info",
+      "info": "First store added below in blocks must be the current active store."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "store",
+      "name": "Store",
+      "settings": [
+        {
+          "type": "text",
+          "id": "store_url",
+          "label": "Store url",
+          "info": "e.g. vanilla.com or sub.vanilla.com"
+        },
+        {
+          "type": "text",
+          "id": "store_name",
+          "label": "Store name",
+          "info": "e.g. 🌍 International, 🇩🇰 Denmark"
+        },
+        {
+          "type": "text",
+          "id": "store_currency",
+          "label": "Store currency",
+          "info": "e.g. USD, EURO, DKK"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,467 @@
+{% assign settings = section.settings %}
+
+{% comment %} Cart items {% endcomment %}
+{% assign cart_items = cart.items %}
+{% assign cart_items_count = cart.item_count %}
+
+{% comment %} Text {% endcomment %}
+{% assign title = settings.title %}
+{% assign continue_shopping_text = settings.continue_shopping_text %}
+{% assign continue_shopping_url = settings.continue_shopping_url %}
+{% assign button_remove_text = settings.button_remove_text %}
+{% assign empty_cart_text = settings.empty_cart_text %}
+{% assign empty_cart_image = settings.empty_cart_image %}
+
+{% comment %} Order summary {% endcomment %}
+{% assign order_summary_text = settings.order_summary_text %}
+
+{% assign subtotal_text = settings.subtotal_text %}
+{% assign subtotal = cart.total_price %}
+
+{% assign enable_taxes = settings.enable_taxes %}
+{% assign tax_text = settings.tax_text %}
+{% assign tax_rate_percentage = tax_line.rate_percentage %}
+{% assign tax_rate = 0.20 %}
+{% capture tax_amount %}{{ subtotal | times: tax_rate }}{% endcapture %}
+
+{% assign delivery_text = settings.delivery_text %}
+{% assign delivery_price = settings.delivery_price %}
+
+{% assign enable_giftcards_discounts = settings.enable_giftcards_discounts %}
+{% assign giftcards_discounts_text = settings.giftcards_discounts_text %}
+{% assign giftcards_discounts_price = settings.giftcards_discounts_price %}
+
+{% comment %} Payment {% endcomment %}
+{% assign payment_options_text = settings.payment_options_text %}
+
+{% comment %} Buttons {% endcomment %}
+{% assign button_checkout_text = settings.button_checkout_text %}
+{% assign button_shop_now_text = settings.button_shop_now_text %}
+{% assign button_shop_now_url = settings.button_shop_now_url %}
+
+{% comment %} Cart note {% endcomment %}
+{% assign cart_note_label = settings.cart_note_label %}
+{% assign cart_note_placeholder = settings.cart_note_placeholder %}
+{% assign enable_cart_note = settings.enable_cart_note %}
+{% assign cart_note = cart.note %}
+
+{% comment %} Disclaimer {% endcomment %}
+{% assign disclaimer_text = settings.disclaimer_text %}
+{% assign disclaimer_link_text = settings.disclaimer_link_text %}
+{% assign disclaimer_link_url = settings.disclaimer_link_url %}
+
+{%- capture disclaimer_link -%}
+  {% if disclaimer_link_text and disclaimer_link_url %}
+    <a class="link" href="{{ disclaimer_link_url }}">{{ disclaimer_link_text }}</a>
+  {% endif %}
+{%- endcapture -%}
+
+{% comment %} Promotional bar {% endcomment %}
+{% assign promotion_bar_enabled = settings.promotion_bar_enabled %}
+{% assign promotion_bar_text = settings.promotion_bar_text %}
+{% assign promotion_bar_bg_color = settings.promotion_bar_background_color %}
+{% assign promotion_bar_text_color = settings.promotion_bar_text_color %}
+
+<section class="cart section">
+
+  {% if promotion_bar_enabled and cart_items_count > 0 %}
+    <div class="cartPromo" style="background: {{ promotion_bar_bg_color }};">
+      <span style="color: {{ promotion_bar_text_color }};">{{ promotion_bar_text }}</span>
+    </div>
+  {% endif %}
+
+  {% if cart_items_count > 0 %}
+  <div class="container">
+    <form action="{{ routes.cart_url }}" method="post" novalidate class="cartForm" id="cart-form">
+      <div class="cartItems">
+        {% comment %} <h4>{{ title }} ({{ cart_items_count }} {{ cart_items_count | pluralize: 'item', 'items' }})</h4> {% endcomment %}
+        <h4>{{ title }} ({{ cart_items_count }})</h4>
+
+        {% for line_item in cart_items %}
+          {% assign index = forloop.index %}
+          {% assign item_id = line_item.id %}
+          {% assign item_product_title = line_item.product.title %}
+          {% assign item_image = line_item.image %}
+          {% assign item_url = line_item.url %}
+          {% assign item_qty = line_item.quantity %}
+          {% assign item_price = line_item.price %}
+          {% assign item_variant_options = line_item.options_with_values %}
+          {% assign item_product_price = line_item.product.price %}
+          {% assign item_product_compare_price = line_item.product.compare_at_price %}
+
+          <div class="cartItem">
+            <div class="cartItem_row">
+
+              {% comment %} Item details {% endcomment %}
+              <div class="cartItem_details">
+
+                {% comment %} Item image {% endcomment %}
+                <a href="{{ item_url }}" class="cartItem_image">
+                  <img class="lazy" src="{{ item_image | img_url: 'master' }}" />
+                </a>
+
+                {% comment %} Item info {% endcomment %}
+                <div class="cartItem_info">
+                  <a href="{{ item_url }}" class="cartItem_title">{{ item_product_title }}</a>
+
+                  {% comment %} Line item variants {% endcomment %}
+                  {% if line_item.product.has_only_default_variant != true %}
+                    <div class="cartItem_options">
+                      {% for item_variant in item_variant_options %}
+                        {% assign item_variant_name = item_variant.name %}
+                        {% assign item_variant_value = item_variant.value %}
+
+                        <div class="cartItem_option">
+                          <span>{{ item_variant_name }}:</span>
+                          <span><strong>{{ item_variant_value }}</strong></span>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+
+                  {% comment %} Item price {% endcomment %}
+                  {% comment %} <span>{{ item_product_price | money }}</span>
+                  {% if item_product_price < item_product_compare_price %}
+                    <span style="text-decoration: line-through;">{{ item_product_compare_price | money }}</span>
+                  {% endif %} {% endcomment %}
+
+                </div>
+              </div>
+
+            </div>
+            
+            <div class="cartItem_row">
+
+              {% comment %} Quantity {% endcomment %}
+              <div class="cartQty">
+                <div class="cartQty_inner">
+                  <a class="cartQty_button" href="/cart/change?line={{ index }}&amp;quantity={{ line_item.quantity | minus: 1 }}">-</a>
+                  <label class="cartQty_label" for="updates_{{ item_id }}">Antal</label>
+                  <input class="cartQty_input" type="number" name="updates[]" id="updates_{{ item_id }}" value="{{ line_item.quantity }}" min="0" pattern="[0-9]*">
+                  <a class="cartQty_button" href="/cart/change?line={{ index }}&amp;quantity={{ line_item.quantity | plus: 1 }}">+</a>
+                </div>
+                <div class="cartQty_removeContainer">
+                  <a href="/cart/change?line={{ index }}&amp;quantity=0" class="cartQty_remove">{{ button_remove_text }}</a>
+                </div>
+              </div>
+
+              {% comment %} Line price total {% endcomment %}
+              <div class="cartItem_linePrice">{{ line_item.line_price | money }}</div>
+
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="cartSidebar cartSidebar-sticky">
+        
+        <h4>{{ order_summary_text }}</h4>
+
+        <div class="cartSidebar_inner">
+
+          <div class="cartSummary">
+            <div class="cartSummary_lines">
+
+              {% comment %} Subtotal {% endcomment %}
+              <div class="cartSummary_line cartSummary_line-subtotal">
+                <div class="cartSummary_text">{{ subtotal_text }}</div>
+                <div class="cartSummary_price">{{ subtotal | money }}</div>
+              </div>
+
+              {% comment %} Taxes {% endcomment %}
+              {% if enable_taxes %}
+              <div class="cartSummary_line">
+                <div class="cartSummary_text">{{ tax_text }}</div>
+                <div class="cartSummary_price">{{ tax_amount | money }}</div>
+              </div>
+              {% endif %}
+
+              {% comment %} Delivery {% endcomment %}
+
+              <div class="cartSummary_line">
+                <div class="cartSummary_text">{{ delivery_text }}</div>
+                <div class="cartSummary_price">{{ delivery_price }}</div>
+              </div>
+
+              {% comment %} Delivery {% endcomment %}
+              {% if enable_giftcards_discounts %}
+              <div class="cartSummary_line">
+                <div class="cartSummary_text">{{ giftcards_discounts_text }}</div>
+                <div class="cartSummary_price">{{ giftcards_discounts_price }}</div>
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+        
+          <input type="submit" name="checkout" class="button button-block" value="{{ button_checkout_text }}" onClick="location.href='/checkout';">
+
+          <div class="paymentMethods">
+            <div class="paymentOptions">
+              {% for type in shop.enabled_payment_types %}
+                <div class="paymentOption">
+                  <img src="{{ type | payment_type_img_url }}" />
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+        </div>
+
+        {% if enable_cart_note %}
+          <div class="cartNote">
+            <label for="cart-note" class="label">{{ cart_note_label }}</label>
+            <textarea class="input" name="note" id="cart-note" rows="4" placeholder="{{ cart_note_placeholder }}">{{ cart_note }}</textarea>
+          </div>
+        {% endif %}
+
+        {% if disclaimer_text %}<div class="cartDisclaimer">{{ disclaimer_text }}{{ disclaimer_link }}</div>{% endif %}
+
+      </div>
+
+    </form>
+
+  </div>
+  {% endif %}
+
+  {% comment %} Empty cart {% endcomment %}
+  {% if cart_items_count == 0 %}
+    <div class="cartEmpty cart_container container">
+
+      <div class="cartEmpty_title">{{ empty_cart_text }}</div>
+      {% if button_shop_now_url and button_shop_now_text %}
+        <a href="{{ button_shop_now_url }}" class="cartEmpty_button button">{{ button_shop_now_text }}</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</section>
+
+{% schema %}
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Header"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Your Cart"
+      },
+      {
+        "type": "text",
+        "id": "continue_shopping_text",
+        "label": "Continue Shopping Text",
+        "default": "Continue Shopping"
+      },
+      {
+        "type": "text",
+        "id": "continue_shopping_url",
+        "label": "Continue Shopping Link",
+        "default": "/collections"
+      },
+      {
+        "type": "header",
+        "content": "Promotion bar"
+      },
+      {
+        "type": "color",
+        "id": "promotion_bar_background_color",
+        "label": "Background color",
+        "default": "#2e3b47"
+      },
+      {
+        "type": "color",
+        "id": "promotion_bar_text_color",
+        "label": "Text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "checkbox",
+        "id": "promotion_bar_enabled",
+        "label": "Enable promotion bar",
+        "default": false
+      },
+      {
+        "type": "textarea",
+        "id": "promotion_bar_text",
+        "label": "Promotion bar text",
+        "info": "e.g. Spend for more than $20.00 to get free shipping"
+      },
+      {
+        "type": "header",
+        "content": "Line Items"
+      },
+      {
+        "type": "text",
+        "id": "button_remove_text",
+        "label": "Remove button text",
+        "default": "Remove"
+      },
+      {
+        "type": "header",
+        "content": "Summary"
+      },
+      {
+        "type": "text",
+        "id": "order_summary_text",
+        "label": "Order summary",
+        "default": "Order summary"
+      },
+      {
+        "type": "text",
+        "id": "subtotal_text",
+        "label": "Subtotal text",
+        "default": "Price in total (incl. tax)"
+      },
+      {
+        "type": "header",
+        "content": "Taxes"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_taxes",
+        "label": "Show tax line",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "tax_text",
+        "label": "Tex text",
+        "default": "Tax"
+      },
+      {
+        "type": "header",
+        "content": "Delivery"
+      },
+      {
+        "type": "richtext",
+        "id": "delivery_text",
+        "label": "Delivery text",
+        "default": "<p>Delivery Times 3 - 5 Days<br>(weekdays Mon-Fri)</p>"
+      },
+      {
+        "type": "text",
+        "id": "delivery_price",
+        "label": "Delivery price",
+        "default": "Free"
+      },
+      {
+        "type": "header",
+        "content": "Gift cards & discounts"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_giftcards_discounts",
+        "label": "Show discount line",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "giftcards_discounts_text",
+        "label": "Giftcard & discounts text",
+        "default": "Giftcard & Discounts"
+      },
+      {
+        "type": "text",
+        "id": "giftcards_discounts_price",
+        "label": "Giftcard & discounts price",
+        "default": "Added at checkout"
+      },
+      {
+        "type": "header",
+        "content": "Checkout button"
+      },
+      {
+        "type": "text",
+        "id": "button_checkout_text",
+        "label": "Secure checkout",
+        "default": "Secure checkout"
+      },
+      {
+        "type": "header",
+        "content": "Cart note"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cart_note",
+        "label": "Enable cart note",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Cart note"
+      },
+      {
+        "type": "text",
+        "id": "cart_note_label",
+        "label": "Label",
+        "default": "Special instructions"
+      },
+      {
+        "type": "text",
+        "id": "cart_note_placeholder",
+        "label": "Placeholder",
+        "default": "Add comment to your order"
+      },
+      {
+        "type": "header",
+        "content": "Disclaimer"
+      },
+      {
+        "type": "textarea",
+        "id": "disclaimer_text",
+        "label": "Disclaimer text",
+        "default": "Our returns are free and easy. If something isn’t quite right, you have 14 days to send it back to us. Read more in our"
+      },
+      {
+        "type": "text",
+        "id": "disclaimer_link_text",
+        "label": "Disclaimer link text",
+        "default": "Shipping & returns"
+      },
+      {
+        "type": "url",
+        "id": "disclaimer_link_url",
+        "label": "Disclaimer link link"
+      },
+      {
+        "type": "header",
+        "content": "Payment methods"
+      },
+      {
+        "type": "textarea",
+        "id": "payment_options_text",
+        "label": "Payment options text",
+        "default": "Our payment methods - pay with visa, master card, amex or paypal"
+      },
+      {
+        "type": "header",
+        "content": "Empty Cart"
+      },
+      {
+        "type": "textarea",
+        "id": "empty_cart_text",
+        "label": "Empty cart text",
+        "default": "Your cart is empty"
+      },
+      {
+        "type": "text",
+        "id": "button_shop_now_text",
+        "label": "Shop Now",
+        "default": "Shop now",
+        "info": "Shows when cart is empty"
+      },
+      {
+        "type": "url",
+        "id": "button_shop_now_url",
+        "label": "Shop Now Link",
+        "default": "/collections"
+      }
+    ]
+  }
+{% endschema %}

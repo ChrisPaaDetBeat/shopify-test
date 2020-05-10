@@ -1,0 +1,46 @@
+{% assign section_settings = section.settings %}
+{% assign collection_title = collection.title %}
+{% assign collection_description = collection.description %}
+{% assign collection_image = collection.image %}
+{% assign read_more_text = settings.read_more_button_text %}
+
+{% assign have_description_near_footer = false %}
+{% if collection_description contains '<hr>' %}
+  {% assign have_description_near_footer = true %}
+  {% assign description_split = collection_description | split: '<hr>' %}
+  {% assign collection_description = description_split | first %}
+{% endif %}
+
+<section class="collectionHero section">
+
+{% comment %} Sort button start {% endcomment %}
+<div class="product_option" option-name="{{ option_name }}">
+          <label class="label" for="option-{{ option_name | downcase }}">{{ option_name }}</label>
+          <div class="select-styled">
+            <select name="option-{{ option_name | downcase }}" class="option_selector option_selector-toggable option_selector-{{ option_name }}">
+              {%- for value in option_values -%}
+                <option value="{{ value | escape | downcase }}" {%- if selected_value == value -%}selected="selected"{%- endif -%}>{{ value }}</option>
+              {%- endfor -%}
+            </select>
+          </div>
+        </div>
+{% comment %} sort button end {% endcomment %}
+  <div class="container">
+    <div class="collectionHero_main">
+      {% include 'responsive-image', image: collection_image %}
+      <h1 class="collectionHero_title">{{ collection_title }}</h1>
+      <h2>coletion h2</h2>
+    </div>
+    <div class="collectionHero_description">
+      {% if collection_description %} {% include 'read-more-text' text: collection_description, read_more_text: read_more_text %} {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Hero banner",
+    "settings": [
+    ]
+  }
+{% endschema %}

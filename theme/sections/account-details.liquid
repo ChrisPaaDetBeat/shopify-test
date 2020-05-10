@@ -1,0 +1,40 @@
+{% assign settings = section.settings %}
+
+{% comment %} Account {% endcomment %}
+{% assign customer_name =  customer.name %}
+{% assign customer_email = customer.email %}
+{% assign view_addresses_url = routes.account_addresses_url %}
+
+{% comment %}  {% endcomment %}
+{% assign section_title = settings.section_title %}
+{% assign account_icon = 'icon-user.png' | asset_img_url: 'medium' %}
+
+<section class="accountDetails section">
+  <header class="section_header">
+    <h5>
+      <img class="lazy" src="{{ account_icon }}" />
+      <span>{{ section_title }}</span>
+    </h5>
+  </header>
+  <div class="addresses">
+    <div class="address">
+      {{ customer.default_address | format_address }}
+    </div>
+  </div>
+  <a href="{{ routes.account_addresses_url }}" class="link">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a>
+</section>
+
+{% schema %}
+  {
+    "name": "Account details",
+    "class": "accountDetails",
+    "settings": [
+      {
+        "type": "text",
+        "id": "section_title",
+        "label": "Personal information",
+        "default": "Personal information"
+      }
+    ]
+  }
+{% endschema %}

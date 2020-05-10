@@ -1,0 +1,312 @@
+{% comment %} Settings {% endcomment %}
+{% assign settings = section.settings %}
+{% assign logo = settings.logo %}
+{% assign logo_width = settings.logo_width | append: 'px;' %}
+{% assign logo_alt = settings.logo.alt %}
+{% assign main_navigation = settings.main_navigation %}
+{% assign brand_name = shop.name %}
+
+{% comment %} Banner {% endcomment %}
+{% assign promotional_message = settings.promotional_message %}
+{% assign promotional_message_mobile = settings.promotional_message_mobile %}
+{% assign banner_background_color = settings.banner_background_color %}
+{% assign banner_text_color = settings.banner_text_color %}
+
+{% comment %} Menu {% endcomment %}
+{% assign menu_text = settings.menu_text %}
+{% assign menu_close_text = settings.menu_close_text %}
+
+{% comment %} Cart {% endcomment %}
+{% assign enable_cart_icon = settings.enable_cart_icon %}
+{% assign cart_icon = settings.cart_icon %}
+{% assign cart_icon_shopping_cart_url = 'icon-shopping-cart.png' | asset_img_url: 'medium' %}
+{% assign cart_icon_bag_url = 'icon-bag.png' | asset_img_url: 'medium' %}
+
+{% assign cart_number = cart.item_count %}
+{% assign cart_text = settings.cart_text %}
+{% assign cart_url = routes.cart_url %}
+
+{% comment %} Account {% endcomment %}
+{% assign show_accounts = settings.show_accounts %}
+{% assign enable_account_icon = settings.enable_account_icon %}
+{% assign account_icon_url = 'icon-user.png' | asset_img_url: 'medium' %}
+
+{% assign login_text = settings.account_login_text %}
+{% assign login_url = routes.account_login_url %}
+
+{% assign logout_text = settings.account_logout_text %}
+{% assign logout_url = routes.account_logout_url %}
+
+{% assign register_text = settings.account_register_text %}
+{% assign register_url = routes.account_register_url %}
+
+{% assign account_text = settings.account_text %}
+{% assign account_url = routes.account_url %}
+
+{% comment %} Logo or brand name {% endcomment %}
+{% capture brand %}
+  {% if template == 'index' %}
+    <h1>
+    {%- if logo -%}
+      <img class="header_logo" style="max-width: {{ logo_width }}" src="{{ logo | img_url: 'master' }}" alt="{{ page_title }}" />
+    {%- else -%}
+      {{- brand_name -}}
+    {%- endif -%}
+    </h1>
+  {% else %}
+      {%- if logo -%}
+      <img class="header_logo" style="max-width: {{ logo_width }}" src="{{ logo | img_url: 'master' }}" alt="{{ logo_alt }}" />
+    {%- else -%}
+      {{- brand_name -}}
+    {%- endif -%}
+  {% endif %}
+{% endcapture %}
+
+{% comment %} Cart icon {% endcomment %}
+{% capture cart_icon %}
+  {% if cart_icon == 'icon_cart' %}
+    <img style="max-width: 23px;" src="{{ cart_icon_shopping_cart_url }}" />
+  {% elsif cart_icon == 'icon_bag' %}
+    <img style="max-width: 20px;" src="{{ cart_icon_bag_url }}" />
+  {% endif %}
+{% endcapture %}
+
+{% comment %} Header {% endcomment %}
+<header class="header" id="header">
+
+  <div class="header_banner" style="background-color: {{ banner_background_color }};">
+    <div class="header_mesage" style="color: {{ banner_text_color }};">
+      <span class="header_mesage-desktop">{{ promotional_message }}</span>
+      {% if promotional_message_mobile != blank %}
+      <span class="header_mesage-mobile">{{ promotional_message_mobile }}</span>
+      {% else %}
+      <span class="header_mesage-mobile">{{ promotional_message }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="header_container">
+
+    <a href="#" class="header_menu navigation_link">{{ menu_text }}</a>
+
+    <a class="header_brand" href="/">{{ brand }}</a>
+
+    <nav class="navigation_left navigation" role="navigation">
+      <ul class="navigation_links list-unstyled">
+        {% for link in linklists[main_navigation].links %}
+          {% assign link_url = link.url %}
+          {% assign link_title = link.title %}
+
+          <li>
+            <a class="navigation_link" href= "{{ link_url }}">{{ link_title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+    
+    <nav class="navigation_right">
+      <div class="navigationLinks">
+        {% include 'currency-converter', class: 'navigationLinks_item currencySelector' %}
+        {%- if show_accounts -%}
+        <div class="navigationLinks_item">
+          <a class="navigation_link" href="{{ account_url }}">
+            <img style="max-width: 20px;" src="{{ account_icon_url }}" />
+          </a>
+        </div>
+        {%- endif -%}
+        <div class="navigationLinks_item">
+          <a href="{{ cart_url }}" class="navigation_link headerCart">
+            {{ cart_icon }}
+            {% if cart_number > 0 %}<div class="headerCart_number">{{ cart_number }}</div>{% endif %}
+          </a>
+        </div>
+
+      </div>
+    </nav>
+
+  </div>
+
+  <div class="navigationMobile">
+    <div class="navigationMobile_header">
+      <a class="navigationMobile_close navigation_link" href="#">{{ menu_close_text }}</a>
+    </div>
+    <div class="navigationMobile_container">
+      <ul class="navigationMobile_links list-unstyled">
+        {% for link in linklists[main_navigation].links %}
+          {% assign link_url = link.url %}
+          {% assign link_title = link.title %}
+
+          <li>
+            <a class="navigation_link" href= "{{ link_url }}">{{ link_title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="navigationMobile_accountArea">
+        <div class="buttonGroup">
+          {%- if customer -%}
+            <a class="button button-outline button-block" href="/account">{{ account_text }}</a>
+            <a class="button button-block" href="/logout">{{ logout_text }}</a>
+          {%- else -%}
+            <a class="button button-block" href="/account/register">{{ register_text }}</a>
+            <a class="button button-outline button-block" href="/account/login">{{ login_text }}</a>
+          {%- endif -%}
+        </div>
+       </div>
+
+       <div class="navigationMobile_actions">
+        <div class="navigationMobile_actionsList">
+        {% include 'currency-converter', class: 'navigationMobile_actionsListItem currencySelector currencySelector-mobile' %}
+        </div>
+       </div>
+
+    </div>
+  </div>
+</header>
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Promotionnal Message"
+      },
+      {
+        "type": "textarea",
+        "id": "promotional_message",
+        "label": "Message (Desktop)",
+        "default": "Free international shipping on orders of $100+"
+      },
+      {
+        "type": "textarea",
+        "id": "promotional_message_mobile",
+        "label": "Message (Mobile)",
+        "info": "Limit text to 55 characters optimal view"
+      },
+      {
+        "type": "color",
+        "id": "banner_background_color",
+        "label": "Background color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "banner_text_color",
+        "label": "Text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo",
+        "info": "Filetype must be .png"
+      },
+      {
+          "type": "range",
+          "id": "logo_width",
+          "min": 50,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "label": "Logo width",
+          "default": 125
+      },
+      {
+        "type": "header",
+        "content": "Navigation"
+      },
+      {
+        "type": "link_list",
+        "id": "main_navigation",
+        "label": "Main navigation"
+      },
+      {
+        "type": "header",
+        "content": "Account options"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_accounts", 
+        "label": "Show account links",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Account"
+      },
+      {
+        "type": "text",
+        "id": "account_register_text",
+        "label": "Sign up",
+        "default": "Sign up"
+      },
+      {
+        "type": "text",
+        "id": "account_login_text",
+        "label": "Log in",
+        "default": "Log in"
+      },
+      {
+        "type": "text",
+        "id": "account_logout_text",
+        "label": "Log out",
+        "default": "Log out"
+      },
+      {
+        "type": "text",
+        "id": "account_text",
+        "label": "My Account",
+        "default": "My Account"
+      },
+      {
+        "type": "header",
+        "content": "Cart"
+      },
+      {
+        "type": "select",
+        "id": "cart_icon",
+        "label": "Cart icon",
+        "default": "icon_cart",
+        "options": [
+          {
+            "value": "icon_cart",
+            "label": "Shopping cart"
+          },
+          {
+            "value": "icon_bag",
+            "label": "Bag"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "cart_text",
+        "label": "Cart text",
+        "default": "Cart"
+      },
+      {
+        "type": "header",
+        "content": "Mobile menu"
+      },
+      {
+        "type": "text",
+        "id": "menu_text",
+        "label": "Menu text",
+        "default": "Menu",
+        "info": "Only visible on mobile"
+      },
+      {
+        "type": "text",
+        "id": "menu_close_text",
+        "label": "Menu close text",
+        "default": "Close",
+        "info": "Only visible on mobile when menu is open"
+      }
+    ]
+  }
+{% endschema %}

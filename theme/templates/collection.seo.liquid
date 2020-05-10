@@ -1,0 +1,37 @@
+{% layout 'seo' %}
+
+{% assign collection_title = collection.title %}
+{% assign collection_description = collection.description %}
+{% assign collection_link = collection.link %}
+{% assign count_collection_products = collection.products | size %}
+{% assign collection_image = collection.image %}
+{% assign read_more_text = settings.read_more_button_text %}
+
+{% assign have_description_near_footer = false %}
+{% if collection_description contains '<hr>' %}
+  {% assign have_description_near_footer = true %}
+  {% assign description_split = collection_description | split: '<hr>' %}
+  {% assign collection_description = description_split | first %}
+  {% assign description_tail = description_split | last %}
+{% endif %}
+
+{% comment %} Collection hero {% endcomment %}
+<section class="collectionHero section" style="padding-bottom: 0;">
+  <div class="container" style="text-align: center;">
+    <h1 style="color: inherit; text-shadow: none; margin-bottom: 10px;">{{ collection_title }}</h1>
+    <div style="max-width: 75ch; margin: 0 auto;">{{ collection_description }}</div>
+  </div>
+</section>
+
+{% comment %} Product list {% endcomment %}
+{% section 'collection-products-list' %}
+
+{% comment %} Extra description near footer {% endcomment %}
+{% if have_description_near_footer %}
+  <section class="longDescription section text-centered">
+    <div class="container">
+      <hr aria-hidden="true">
+      <div style="max-width: 100ch; margin: 0 auto;">{{ description_tail }}</div>
+    </div>
+  </section>
+{% endif %}

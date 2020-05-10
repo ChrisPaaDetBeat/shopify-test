@@ -1,0 +1,152 @@
+{% comment %} Text {% endcomment %}
+{% assign button_text_add_to_cart = settings.button_add_to_cart %}
+{% assign button_text_sold_out = settings.button_sold_out %}
+{% assign button_text_preorder = settings.button_preorder %}
+
+{% comment %} Options {% endcomment %}
+{% assign active_product = product.selected_or_first_available_variant %}
+{% assign active_product_id = product.selected_or_first_available_variant.id %}
+{% assign product_variants = product.variants %}
+{% assign product_variants_size = product.variants | size %}
+{% assign product_options = product.options_with_values %}
+{% assign product_available = active_product.available %}
+{% assign product_qty = active_product.inventory_quantity %}
+{% assign product_options_size = product_options | size %}
+
+{% comment %} Temporary labels {% endcomment %}
+{% assign option_1_label = product.options.first %}
+{% assign option_2_label = product.options[1] %}
+{% assign option_3_label = product.options[3] %}
+
+{%- capture option_labels -%}
+  {% if option_1_label %}{{ option_1_label }}{% endif %}
+  {% if option_2_label %} / {{ option_2_label }}{% endif %}
+  {% if option_3_label %} / {{ option_3_label }}{% endif %}
+{%- endcapture -%}
+
+{% comment %} Determine if product is available for preorder or subscription {% endcomment %}
+{% assign is_subscription = false %}
+{% assign is_preorder = false %}
+{% assign has_preorder_tag = false %}
+{% assign product_inventory_policy = active_product.inventory_policy %}
+
+{% for tag in product.tags %}
+  {% assign tag = tag | downcase %}
+  {% if tag contains 'pre-order' %}
+    {% assign has_preorder_tag = true %}
+  {% endif %}
+  {% if tag contains 'chargebee-subscription' %}
+    {% assign is_subscription = true %}
+  {% endif %}
+{% endfor %}
+
+{% if product_inventory_policy == 'continue' and has_preorder_tag and product_qty <= 0 %}
+  {% assign is_preorder = true %}
+{% endif %}
+
+{% comment %} Change button text to preorder text {% endcomment %}
+{% if is_preorder %}
+  {% assign button_text_add_to_cart = button_text_preorder %}
+{% endif %}
+
+{% form "product", product, class: 'product_form', id: 'product-form', data-productid: product.id %}
+
+  {% if settings.enable_recharge %}
+    {% if product.available %}{% include 'subscription-product' %}{% endif %}
+  {% endif %}
+
+  {% if settings.enable_chargebee and is_subscription %}
+    {% include 'product-options-subscription' with product %}
+  {% endif %}
+  
+  {% unless is_subscription == true %}
+
+    {% comment %} Show variant options as separate select boxes {% endcomment %}
+    {% if product_variants_size > 1 %}
+    <div class="product_options{% if product_options_size == 1 %} product_options-single{% endif %}"> 
+      {%- for product_option in product_options -%}
+        {%- assign option_name = product_option.name -%}
+        {%- assign option_values = product_option.values -%}
+        {%- assign selected_value = product_option.selected_value -%}
+
+        <div class="product_option" option-name="{{ option_name }}">
+          <label class="label" for="option-{{ option_name | downcase }}">{{ option_name }}</label>
+          <div class="select-styled">
+            <select name="option-{{ option_name | downcase }}" class="option_selector option_selector-toggable option_selector-{{ option_name }}">
+              {%- for value in option_values -%}
+                <option value="{{ value | escape | downcase }}" {%- if selected_value == value -%}selected="selected"{%- endif -%}>{{ value }}</option>
+              {%- endfor -%}
+            </select>
+          </div>
+        </div>
+
+      {%- endfor -%}
+    </div>
+    {% endif %}
+
+  {% endunless %}
+
+  {% comment %} Hidden form to handle add to cart unless subscription product {% endcomment %}
+  {% unless is_subscription == true  %}
+
+    {% if product_variants_size > 1 %}
+      {% comment %} Hidden form to handle add to cart {% endcomment %}
+      <select name="id" id="ProductSelect" style="display: none;">
+        {% assign hidden_product_variants = product.variants %}
+        {% for hidden_variant in hidden_product_variants %}
+          {% assign hidden_variant_id = hidden_variant.id %}
+          {% assign hidden_variant_title = hidden_variant.title %}
+          {% assign hidden_variant_title_split = hidden_variant_title | split: ' / ' %}
+          <option 
+            data-option="{% for title in hidden_variant_title_split %}{{ title | replace: ' ', '-' | downcase }}{% unless forloop.last %}-{% endunless %}{% endfor %}"
+            value="{{ hidden_variant_id }}" {% if hidden_variant_id == active_product_id %}
+            selected="selected" {% endif %}>
+              {{- hidden_variant_title -}}
+          </option>
+        {% endfor %}
+      </select>
+    {% else %}
+      <input type="hidden" id="id" name="id" value="{{ active_product_id }}" />
+    {% endif %}
+    
+    {% if product_available %}
+      <input id="product-atc" class="button button-block" type="submit" value="{{ button_text_add_to_cart }}" />
+    {% else %}
+      <input id="product-atc" class="button button-block" type="submit" value="{{ button_text_sold_out }}" disabled />
+    {% endif %}
+
+    {% if is_preorder %}
+      <div class="product_disclaimer">{{ preorder_text }}</div>
+    {% endif %}
+  
+  {% endunless %}
+
+{% endform %}
+
+{% unless is_subscription == true %}
+<script>
+  // Toggle between variants
+  var variants = document.querySelectorAll('#ProductSelect option') // Hidden select list with id
+  var productOptions = document.querySelectorAll('.option_selector-toggable')
+
+  // Listen to product options changes
+  productOptions.forEach(function(option) {
+    option.addEventListener('change', function(event) {
+      event.preventDefault();
+
+      let selectedVariantId = Array.from(productOptions).map(function(productOption) {
+        return productOption.value.replace(/ /g, '-').toLowerCase()
+      }).join('-')
+
+      Array.prototype.slice.call(variants).forEach(function(variant) {
+        let id = variant.getAttribute('data-option');
+        let value = variant.value;
+
+        if (id === selectedVariantId) {
+          window.location.search = '?variant=' + value
+        }
+      });
+    })
+  })
+</script>
+{% endunless %}

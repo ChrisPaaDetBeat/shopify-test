@@ -1,0 +1,47 @@
+{% assign body_id = blank %}
+
+{% if template contains 'index' %}
+  {% assign body_id = 'home' %}
+{% endif %}
+
+{% if template contains 'collection' %}
+  {% if request.path == '/collections' %}
+    {% assign body_id = 'plp-all' %}
+  {% else %}
+    {% assign body_id = 'plp-' | append: collection.id %}
+  {% endif %}
+{% endif %}
+
+{% if template contains 'product' %}
+  {% assign body_id = 'pdp-' | append: product.id %}
+{% endif %}
+
+{% if template contains 'blog' %}
+  {% assign body_id = 'blog-' | append: blog.id %}
+{% endif %}
+
+{% if template contains 'article' %}
+  {% assign body_id = 'post-' | append: article.id %}
+{% endif %}
+
+{% if template contains 'page' %}
+  {% assign body_id = 'page-' | append: page.id %}
+{% endif %}
+
+{% if template contains 'cart' %}
+  {% assign body_id = 'cart' %}
+{% endif %}
+
+{% if template contains 'login' %}
+  {% assign body_id = 'login' %}
+{% endif %}
+
+{% if template contains 'register' %}
+  {% assign body_id = 'signup' %}
+{% endif %}
+
+{% if template contains 'account' %}
+  {% unless template contains 'register' or template contains 'login' %}
+    {% assign body_id = 'account' %}
+  {% endunless %}
+{% endif %}

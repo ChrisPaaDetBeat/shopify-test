@@ -1,0 +1,22 @@
+{%- assign settings = section.settings -%}
+{%- assign background_color = settings.background_color -%}
+
+<style>
+  .main, .section {
+    background-color: {{ background_color }};
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Page settings",
+    "settings": [
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color",
+        "default": "#eee2d6"
+      }
+    ]
+  }
+{% endschema %}

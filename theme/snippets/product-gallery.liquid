@@ -1,0 +1,108 @@
+{%- assign product_images = product.images -%}
+{%- assign variant_sku = product.selected_or_first_available_variant.sku | downcase -%}
+{%- assign visible_images = 0 -%}
+{%- assign product_variants_size = product.variants | size -%}
+
+{%- assign product_has_variants = false -%}
+{%- if product_variants_size > 0 -%}
+  {%- assign product_has_variants = true -%}
+{%- endif -%}
+
+{%- for image in product_images -%}
+  {%- assign image_alt = image.alt -%}
+  {%- assign image_alt_split = image.alt | split: ',' -%}
+  {%- assign image_alt_sku = image_alt_split | first | downcase -%}
+  {%- assign image_alt_tag = image_alt_split | last | downcase -%}
+
+  {%- if image_alt_sku contains variant_sku -%}
+    {%- assign visible_images = visible_images | plus: 1 -%}
+  {%- elsif image_alt == '*' -%}
+    {%- assign visible_images = visible_images | plus: 1 -%}
+  {%- elsif image_alt == product.title or image_alt == ' ' -%}
+    {%- assign visible_images = visible_images | plus: 1 -%}
+  {%- endif -%}
+
+{%- endfor -%}
+
+<div id="product-gallery" class="gallery" data-gallery-size="{{ visible_images }}" data-variants-size="{{ product_variants_size }}" data-active-sku="{{ variant_sku }}">
+
+  {%- comment -%} Gallery thumbnails - only visible on desktop {%- endcomment -%}
+  {%- if visible_images > 1 -%}
+    <div class="gallery_thumbnails">
+      {%- for image in product_images -%}
+        {%- assign image_alt = image.alt -%}
+        {%- assign image_alt_split = image.alt | split: ',' -%}
+        {%- assign image_alt_sku = image_alt_split | first | downcase -%}
+        {%- assign image_alt_tag = image_alt_split | last | downcase -%}
+
+        {%- if image_alt_sku contains variant_sku -%}
+          <div class="gallery_thumbnail{% if forloop.first %} gallery_thumbnail-active{% endif %}" data-skus="{{ image_alt_sku }}">
+            <img src="{{ image | img_url: '72x', format: 'pjpg', scale: 2 }}" alt="{{ image.alt | escape }}" />
+          </div>
+
+        {%- elsif image_alt == '*' -%}
+          <div class="gallery_thumbnail{% if forloop.first %} gallery_thumbnail-active{% endif %}" data-skus="{{ image_alt_sku }}">
+            <img src="{{ image | img_url: '72x', format: 'pjpg', scale: 2 }}" alt="{{ image.alt | escape }}" />
+          </div>
+
+        {%- elsif image_alt == product.title or image_alt == ' ' -%}
+          <div class="gallery_thumbnail{% if forloop.first -%} gallery_thumbnail-active{% endif %}" data-skus="{{ image_alt_sku }}">
+            <img src="{{ image | img_url: '72x', format: 'pjpg', scale: 2 }}" alt="{{ image.alt | escape }}" />
+          </div>
+        {%- endif -%}
+
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <div class="gallery_images">
+    {%- comment -%} Product image carousel {%- endcomment -%}
+    <div class="gallery_imagesInner">
+      {%- for image in product_images -%}
+        {%- assign image_alt = image.alt -%}
+        {%- assign image_alt_split = image.alt | split: ',' -%}
+        {%- assign image_alt_sku = image_alt_split | first | downcase -%}
+        {%- assign image_alt_tag = image_alt_split | last | downcase -%}
+        
+        {%- if image_alt_sku contains variant_sku -%}
+          {%- include 'responsive-image', image: image, desktop_width: '1024' -%}
+        {%- elsif image_alt == '*' -%}
+          {%- include 'responsive-image', image: image, desktop_width: '1024' -%}
+        {%- elsif image_alt == product.title or image_alt == ' ' -%}
+          {%- include 'responsive-image', image: image, desktop_width: '1024' -%}
+        {%- endif -%}
+
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} Dots navigation - only visible on mobile {%- endcomment -%}
+    {%- if visible_images > 1 -%}
+      <div class="galleryDots">
+        {%- for image in product_images -%}
+          {%- assign image_alt = image.alt -%}
+          {%- assign image_alt_split = image.alt | split: ',' -%}
+          {%- assign image_alt_sku = image_alt_split | first | downcase -%}
+          {%- assign image_alt_tag = image_alt_split | last | downcase -%}
+
+          {%- if image_alt_sku contains variant_sku -%}
+              <button class="gallery_dot{% if forloop.first %} gallery_dot-active{% endif %}"></button>
+          {%- elsif image_alt == '*' -%}
+              <button class="gallery_dot{% if forloop.first %} gallery_dot-active{% endif %}"></button>
+          {%- elsif image_alt == product.title or image_alt == ' ' -%}
+              <button class="gallery_dot{% if forloop.first %} gallery_dot-active{% endif %}"></button>
+          {%- endif -%}
+
+        {%- endfor -%}
+      </div>
+    
+      {%- comment -%} Arrows {%- endcomment -%}
+      <a class="gallery_button gallery_button-prev" href="#">
+        <img src="{{ 'chevron-left.png' | asset_url }}" alt="Arrow left">
+      </a>
+      <a class="gallery_button gallery_button-next" href="#">
+        <img src="{{ 'chevron-right.png' | asset_url }}" alt="Arrow right">
+      </a>
+    {%- endif -%}
+
+  </div>
+</div>

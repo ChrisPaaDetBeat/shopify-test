@@ -1,0 +1,40 @@
+{% assign settings = section.settings %}
+{% assign show_section = settings.show_section %}
+{% assign section_title = settings.section_title %}
+
+{% if show_section %}
+<section class="detailedDescription section">
+  <div class="container">
+    {% if section_title %}<h2>{{ section_title }}</h2>{% endif %}
+    {% include 'product-description', description: product.description, visible_part: 'tail' %}
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Detailed description",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section",
+      "label": "Show section",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "Description"
+    }
+  ]
+}
+{% endschema %}

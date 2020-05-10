@@ -1,0 +1,68 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign account_id = settings.account_id %}
+
+{% comment %} Site & Event Tracking snippet {% endcomment %}
+{% if account_id %}
+<script type="text/javascript">
+    (function(e,t,o,n,p,r,i){e.visitorGlobalObjectAlias=n;e[e.visitorGlobalObjectAlias]=e[e.visitorGlobalObjectAlias]||function(){(e[e.visitorGlobalObjectAlias].q=e[e.visitorGlobalObjectAlias].q||[]).push(arguments)};e[e.visitorGlobalObjectAlias].l=(new Date).getTime();r=t.createElement("script");r.src=o;r.async=true;i=t.getElementsByTagName("script")[0];i.parentNode.insertBefore(r,i)})(window,document,"https://diffuser-cdn.app-us1.com/diffuser/diffuser.js","vgo");
+    vgo('setAccount', '{{ account_id }}');
+    vgo('setTrackByDefault', true);
+    vgo('process');
+</script>
+{% endif %}
+
+{% if blocks %}
+  {% for block in blocks %}
+    {% assign block_settings = block.settings %}
+    {% comment %} {% assign popup_id = 'active-campaign-popup-' | append: block.id %} {% endcomment %}
+    {% comment %} {% assign page_url = block_settings.popup_page_url %} {% endcomment %}
+    {% assign popup_script = block_settings.popup_script %}
+
+      {% if popup_script %} {{ popup_script }} {% endif %}
+      {% comment %} {% if page_url == request.path %}
+        <div id="{{ popup_id }}">{{ popup_script }}</div>
+      {% endif %} {% endcomment %}
+
+  {% endfor %}
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Active Campaign",
+    "max_blocks": 1,
+    "settings": [
+      {
+        "type": "text",
+        "id": "account_id",
+        "label": "Active Campaign Account ID",
+        "info": "ex. 123456789. Can be found in your Active Campaign account under Forms > Site & Event Tracking > Tracking code."
+      }
+    ],
+    "blocks": [
+      {
+        "type": "popup",
+        "name": "Pop-up",
+        "settings": [
+          {
+            "type": "textarea",
+            "id": "popup_script",
+            "label": "Popup Script",
+            "info": "Require a form to be created in Active Campaign. When form is created click Integrate Your Form and copy the the Simple Embed into the textarea above"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% comment %} 
+  Block setting to be implemented
+
+    {
+      "type": "url",
+      "id": "popup_page_url",
+      "label": "Page URL",
+      "info": "Leave blank to show on all pages or pick target a specific page"
+    }
+ {% endcomment %}

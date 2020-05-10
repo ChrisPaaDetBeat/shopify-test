@@ -1,0 +1,10 @@
+{% include 'breadcrumb' %}
+
+{% section 'account-login' %}
+
+{% if settings.enable_recharge %}
+  {% include 'subscription-account-login' %}
+{% endif %}
+
+{% section 'account-reset-password' %}
+{% section 'account-recover-password' %}

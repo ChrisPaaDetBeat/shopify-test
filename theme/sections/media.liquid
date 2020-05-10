@@ -1,0 +1,136 @@
+{% assign settings = section.settings %}
+{% assign blocks = section.blocks %}
+{% assign section_title = settings.section_title %}
+
+<section class="section media">
+  {% if section_title %}
+  <header class="section_header">
+    <h4 class="media_title">{{ section_title }}</h4>
+  </header>
+  {% endif %}
+  <div class="media_container container">
+    <div class="media_grid">
+      {% if blocks %}
+        {% for block in blocks %}
+          {% assign block_settings = block.settings %}
+          {% assign logo = block_settings.logo %}
+          {% assign logo_url = block_settings.logo_url %}
+          {% assign media_name = block_settings.name %}
+          {% assign hide_on_mobile = block_settings.hide_on_mobile %}
+          {% assign logo_width = block_settings.logo_width %}
+
+          <div class="media_item{% if hide_on_mobile %} media_item-hide{% endif %}">
+            {% if logo_url %}<a href="{{ logo_url }}" title="{{ media_name }}">{% endif %}
+              {% if logo == blank %}
+                {{ 'image' | placeholder_svg_tag: 'media_placeholder' }}
+              {% else %}
+                <img class="lazy" style="max-width: {{ logo_width }}px;" data-src="{{ logo | img_url: '400x' }}" {% if media_name %}alt="{{ media_name }}"{% endif %}>
+              {% endif %}
+            {% if logo_url %}</a>{% endif %}
+          </div>
+
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Media",
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "As seen in"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "media",
+      "name": "Media",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Options"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_on_mobile",
+          "label": "Hide on mobile",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Info"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Media name"
+        },
+        {
+          "type": "url",
+          "id": "logo_url",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo",
+          "info": "Recommended width 200 pixels"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 50,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "label": "Logo width",
+          "default": 100
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Media",
+      "category": "Promotional",
+      "settings": {},
+      "blocks": [
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

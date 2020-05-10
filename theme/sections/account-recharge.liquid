@@ -1,0 +1,43 @@
+{% assign settings = section.settings %}
+{% assign section_title = settings.section_title %}
+
+{% comment %} Link {% endcomment %}
+{% assign link_text = settings.link_text %}
+{% assign recurring_icon = 'icon-recurring.png' | asset_img_url: 'medium' %}
+
+<section class="subscription section">
+  <header class="section_header">
+    <h5>
+      <img src="{{ recurring_icon }}" />
+      <span>{{ section_title }}</span>
+    </h5>
+  </header>
+  <div id="rc_link_container">
+    <a class="link" href="/tools/recurring/login">{{ link_text }}</a>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Account Recharge",
+    "class": "accountRecharge",
+    "settings": [
+      {
+        "type": "text",
+        "id": "section_title",
+        "label": "Subscriptions",
+        "default": "Subscriptions"
+      },
+      {
+        "type": "header",
+        "content": "Link"
+      },
+      {
+        "type": "text",
+        "id": "link_text",
+        "label": "Text",
+        "default": "Manage Subscriptions"
+      }
+    ]
+  }
+{% endschema %}
